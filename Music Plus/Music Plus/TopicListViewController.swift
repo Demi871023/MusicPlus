@@ -268,7 +268,15 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
             let album = jsonTopicListObjectArray[index].song_album
             
             let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-            TopicListSongArray.append(SONG(Id:jsonTopicListObjectArray[index].song_id, Cover: coverPath, Album: jsonTopicListObjectArray[index].song_album, SongName: jsonTopicListObjectArray[index].song_name, Singer: jsonTopicListObjectArray[index].song_artist, Lyrics: "目前無歌詞", Category: .Korean, SongPath: coverPath, SongLength: 0))
+           
+            if jsonTopicListObjectArray[index].song_lyrics == nil
+            {
+                //print(jsonObjectArray[index].song_id)
+                //print(jsonObjectArray[index].song_name)
+                jsonTopicListObjectArray[index].song_lyrics = "目前無歌詞"
+            }
+            
+            TopicListSongArray.append(SONG(Id:jsonTopicListObjectArray[index].song_id, Cover: coverPath, Album: jsonTopicListObjectArray[index].song_album, SongName: jsonTopicListObjectArray[index].song_name, Singer: jsonTopicListObjectArray[index].song_artist, Lyrics: jsonTopicListObjectArray[index].song_lyrics ?? "", Category: .Korean, SongPath: coverPath, SongLength: 0))
             //print(jsonTopicListObjectArray[index].song_photo)
 
             downloadSongCover(url: jsonTopicListObjectArray[index].song_photo, singer: jsonTopicListObjectArray[index].song_artist, album: jsonTopicListObjectArray[index].song_album)
@@ -336,48 +344,64 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
     
     @objc func connected(sender: UIButton)
     {
+        var isExistInMyList:Bool = false
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         print("Heart Click")
         let ClickButtonRow = sender.tag
     
-        SongSearchArray.append(SONG(Id:TopicListSong[ClickButtonRow].Id, Cover: TopicListSong[ClickButtonRow].Cover, Album: TopicListSong[ClickButtonRow].Album, SongName: TopicListSong[ClickButtonRow].SongName, Singer: TopicListSong[ClickButtonRow].Singer, Lyrics: "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
-        
-        SongArray.append(SONG(Id:TopicListSong[ClickButtonRow].Id, Cover: TopicListSong[ClickButtonRow].Cover, Album: TopicListSong[ClickButtonRow].Album, SongName: TopicListSong[ClickButtonRow].SongName, Singer: TopicListSong[ClickButtonRow].Singer, Lyrics: "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
-        
-        DispatchQueue.main.async {
-            self.AddSuccessNotificationLabel.isHidden = false
-            // UIView usage
+        for (index,element) in SongSearchArray.enumerated()
+        {
+            if SongSearchArray[index].Id == TopicListSong[ClickButtonRow].Id
+            {
+                isExistInMyList = true
+            }
         }
         
-        let parameters:[String:Any] = ["UserId": UserId, "SongId": SongArray[SongArray.count - 1].Id] as! [String:Any]
+        if isExistInMyList == false
+        {
+        SongSearchArray.append(SONG(Id:TopicListSong[ClickButtonRow].Id, Cover: TopicListSong[ClickButtonRow].Cover, Album: TopicListSong[ClickButtonRow].Album, SongName: TopicListSong[ClickButtonRow].SongName, Singer: TopicListSong[ClickButtonRow].Singer, Lyrics: TopicListSong[ClickButtonRow].Lyrics, Category: .Korean, SongPath: documentDirectory, SongLength: 23))
         
-        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
-        
-        request.httpBody = httpBody
-        
-        let session = URLSession.shared
-        session.dataTask(with:  request){
-            (data, response, error) in
-            if let response = response{
-                print(response)
+            SongArray.append(SONG(Id:TopicListSong[ClickButtonRow].Id, Cover: TopicListSong[ClickButtonRow].Cover, Album: TopicListSong[ClickButtonRow].Album, SongName: TopicListSong[ClickButtonRow].SongName, Singer: TopicListSong[ClickButtonRow].Singer, Lyrics: TopicListSong[ClickButtonRow].Lyrics, Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+            
+            DispatchQueue.main.async {
+                self.AddSuccessNotificationLabel.isHidden = false
+                // UIView usage
             }
-            if let data = data{
-                do{
-                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-                    print(json)
-                    
+            
+            let parameters:[String:Any] = ["UserId": UserId, "SongId": SongArray[SongArray.count - 1].Id] as! [String:Any]
+            
+            guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+            
+            request.httpBody = httpBody
+            
+            let session = URLSession.shared
+            session.dataTask(with:  request){
+                (data, response, error) in
+                if let response = response{
+                    print(response)
                 }
-                catch{
-                    print(error)
+                if let data = data{
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        print(json)
+                        
+                    }
+                    catch{
+                        print(error)
+                    }
                 }
-            }
-        }.resume()
+            }.resume()
+        }
+        else
+        {
+            print(" 主題歌單 此歌曲已經新增至個人歌單中")
+        }
     
     }
     

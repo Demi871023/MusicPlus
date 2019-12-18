@@ -102,9 +102,7 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     
     @IBOutlet weak var SongFindKeyTextField: UITextField!
-    
     @IBOutlet weak var SongFindWithKeyTableView: UITableView!
-    
     @IBOutlet weak var AddSuccessNotificationLabel: UILabel!
     
     
@@ -117,8 +115,31 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
             self.AddSuccessNotificationLabel.isHidden = true
             // UIView usage
         }
+        
+        
+        /*let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
+        
+        // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
+        
+        var arrayOfStrings:Array<String> = Array()
+        
+        do {
+            // This solution assumes  you've got the file in your bundle
+            //if let path = Bundle.main.path(forResource: "YourTextFilename", ofType: "txt"){
+            /*let data = try String(contentsOfFile:fileURL.absoluteString, encoding: String.Encoding.utf8)
+                arrayOfStrings = data.components(separatedBy: "\n")
+                print(arrayOfStrings)*/
+            let text2 = try String(contentsOf: fileURL, encoding: .utf8)
+            print(text2)
+            arrayOfStrings = text2.components(separatedBy: "\n")
+            print(arrayOfStrings)
 
-        // Do any additional setup after loading the view.
+        }
+        catch{
+            // do something with Error
+            print("Read error")
+        }*/
     }
     
     
@@ -167,6 +188,27 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
                 }
             }
         }.resume()
+        
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
+        
+        // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
+        guard let tmp = SongFindKeyTextField.text else { return }
+        let text = tmp + "\n"
+        let record = text ?? ""
+        
+        do{
+            let fileUpdater = try FileHandle(forUpdating: fileURL)
+            // 移至檔案最後加入新的搜尋關鍵字
+            fileUpdater.seekToEndOfFile()
+            fileUpdater.write(record.data(using: .utf8)!)
+            fileUpdater.closeFile()
+            print("Write Successful")
+        }
+        catch
+        {
+            print("Write Error")
+        }
     }
     
     func SetUpSongFindWithKey()
@@ -178,7 +220,17 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
             let album = jsonSongFindObjectArray[index].song_album
             //let album = "句號"
             let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-            SongFindArray.append(SONGFIND(Id: jsonSongFindObjectArray[index].song_id, Cover: coverPath, SongName: jsonSongFindObjectArray[index].song_name, Singer: jsonSongFindObjectArray[index].song_artist, Album: jsonSongFindObjectArray[index].song_album))
+            /*if jsonSongFindObjectArray[index].song_lyrics is NSNull
+            {
+                print("沒有歌詞")
+            }*/
+            
+            if jsonSongFindObjectArray[index].song_lyrics == nil
+            {
+                jsonSongFindObjectArray[index].song_lyrics = "目前無歌詞"
+            }
+            
+            SongFindArray.append(SONGFIND(Id: jsonSongFindObjectArray[index].song_id, Cover: coverPath, Lyric: jsonSongFindObjectArray[index].song_lyrics ?? "", SongName: jsonSongFindObjectArray[index].song_name, Singer: jsonSongFindObjectArray[index].song_artist, Album: jsonSongFindObjectArray[index].song_album))
             
             downloadSongCover(url: jsonSongFindObjectArray[index].song_photo, singer: jsonSongFindObjectArray[index].song_artist, album: jsonSongFindObjectArray[index].song_album)
         }
@@ -256,48 +308,66 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @objc func connected(sender: UIButton)
     {
+        var isExistInMyList:Bool = false
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         print("Heart Click")
         let ClickButtonRow = sender.tag
         
-        SongSearchArray.append(SONG(Id:SongFindShowArray[ClickButtonRow].Id, Cover: SongFindShowArray[ClickButtonRow].Cover, Album: SongFindShowArray[ClickButtonRow].Album, SongName: SongFindShowArray[ClickButtonRow].SongName, Singer: SongFindShowArray[ClickButtonRow].Singer, Lyrics: "目前無歌詞", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
-        
-        SongArray.append(SONG(Id:SongFindShowArray[ClickButtonRow].Id, Cover: SongFindShowArray[ClickButtonRow].Cover, Album: SongFindShowArray[ClickButtonRow].Album, SongName: SongFindShowArray[ClickButtonRow].SongName, Singer: SongFindShowArray[ClickButtonRow].Singer, Lyrics: "目前無歌詞", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
-        
-        DispatchQueue.main.async {
-            self.AddSuccessNotificationLabel.isHidden = false
-            // UIView usage
+        print(SongSearchArray.enumerated())
+        for (index,element) in SongSearchArray.enumerated()
+        {
+            if SongSearchArray[index].Id == SongFindShowArray[ClickButtonRow].Id
+            {
+                    isExistInMyList = true
+            }
+        }
+       
+        if isExistInMyList == false
+        {
+        SongSearchArray.append(SONG(Id:SongFindShowArray[ClickButtonRow].Id, Cover: SongFindShowArray[ClickButtonRow].Cover, Album: SongFindShowArray[ClickButtonRow].Album, SongName: SongFindShowArray[ClickButtonRow].SongName, Singer: SongFindShowArray[ClickButtonRow].Singer, Lyrics: SongFindShowArray[ClickButtonRow].Lyric, Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+            
+        SongArray.append(SONG(Id:SongFindShowArray[ClickButtonRow].Id, Cover: SongFindShowArray[ClickButtonRow].Cover, Album: SongFindShowArray[ClickButtonRow].Album, SongName: SongFindShowArray[ClickButtonRow].SongName, Singer: SongFindShowArray[ClickButtonRow].Singer, Lyrics: SongFindShowArray[ClickButtonRow].Lyric, Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+            
+            DispatchQueue.main.async {
+                self.AddSuccessNotificationLabel.isHidden = false
+                // UIView usage
+            }
+            
+            let parameters:[String:Any] = ["UserId": UserId, "SongId": SongFindShowArray[ClickButtonRow].Id] as! [String:Any]
+            
+            guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+            
+            request.httpBody = httpBody
+            
+            let session = URLSession.shared
+            session.dataTask(with:  request){
+                (data, response, error) in
+                if let response = response{
+                    print(response)
+                }
+                if let data = data{
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        print(json)
+                        
+                    }
+                    catch{
+                        print(error)
+                    }
+                }
+            }.resume()
+        }
+        else
+        {
+            print("此歌曲已經新增至個人歌單中")
         }
         
-        let parameters:[String:Any] = ["UserId": UserId, "SongId": SongFindShowArray[ClickButtonRow].Id] as! [String:Any]
-        
-        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
-        
-        request.httpBody = httpBody
-        
-        let session = URLSession.shared
-        session.dataTask(with:  request){
-            (data, response, error) in
-            if let response = response{
-                print(response)
-            }
-            if let data = data{
-                do{
-                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-                    print(json)
-                    
-                }
-                catch{
-                    print(error)
-                }
-            }
-            }.resume()
         
     }
     
@@ -328,10 +398,84 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
 }
 
+var RecordStringArray:Array<String> = Array()
+
+class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSource
+{
+    
+    @IBOutlet weak var SongFindRecordTableView: UITableView!
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
+        
+        // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
+        
+        do {
+            // This solution assumes  you've got the file in your bundle
+            //if let path = Bundle.main.path(forResource: "YourTextFilename", ofType: "txt"){
+            /*let data = try String(contentsOfFile:fileURL.absoluteString, encoding: String.Encoding.utf8)
+             arrayOfStrings = data.components(separatedBy: "\n")
+             print(arrayOfStrings)*/
+            let text2 = try String(contentsOf: fileURL, encoding: .utf8)
+            print(text2)
+            RecordStringArray = text2.components(separatedBy: "\n")
+            print(RecordStringArray)
+            
+        }
+        catch{
+            // do something with Error
+            print("Read error")
+        }
+        
+        SongFindRecordTableView?.delegate = self
+        SongFindRecordTableView?.dataSource = self
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return RecordStringArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = SongFindRecordTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! SongFindRecordCell
+        cell.RecordStringCell.text = RecordStringArray[indexPath.row]
+        /*let coverPath = SongFindShowArray[indexPath.row].Cover.path
+        
+        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
+        cell.SongNameCell.text = SongFindShowArray[indexPath.row].SongName
+        cell.SingerCell.text = SongFindShowArray[indexPath.row].Singer
+        cell.LikeHeartButtonCell.tag = indexPath.row
+        cell.LikeHeartButtonCell.addTarget(self, action:  #selector(connected(sender:)), for: .touchUpInside)*/
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
+    
+    
+    
+    /*func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        <#code#>
+    }*/
+    
+    
+}
+
 class SONGFIND {
     let Id: Int
     let Cover: URL
     //let Album: String
+    let Lyric: String
     let SongName: String
     let Singer: String
     let Album: String
@@ -339,10 +483,11 @@ class SONGFIND {
     //var SongPath: URL
     //var SongLength: Double
     
-    init(Id: Int, Cover: URL, SongName: String, Singer: String, Album: String)
+    init(Id: Int, Cover: URL, Lyric: String, SongName: String, Singer: String, Album: String)
     {
         self.Id = Id
         self.Cover = Cover
+        self.Lyric = Lyric
         //self.Album = Album
         self.SongName = SongName
         self.Singer = Singer

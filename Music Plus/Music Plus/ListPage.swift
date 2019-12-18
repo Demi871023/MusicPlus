@@ -237,8 +237,9 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
                     
                     print(LoadMusicJson)
                     jsonObjectArray = try JSONDecoder().decode([SongInfo].self, from: LoadMusicData)
+                    print("====================")
                     print(jsonObjectArray)
-                    
+                    print("====================")
                     
                     // 以一個array的方式呈現
                     //print(self.jsonObjectArray)
@@ -289,6 +290,13 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
             let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
             //let coverPath = mainPath + singer + "/" + album + "/cover.jpg"
             //let coverImage = UIImage(contentsOfFile: coverPath)
+            
+            if jsonObjectArray[index].song_lyrics == nil
+            {
+                //print(jsonObjectArray[index].song_id)
+                //print(jsonObjectArray[index].song_name)
+                jsonObjectArray[index].song_lyrics = "目前無歌詞"
+            }
             
             SongArray.append(SONG(Id: jsonObjectArray[index].song_id, Cover: coverPath, Album: jsonObjectArray[index].song_album, SongName: jsonObjectArray[index].song_name, Singer: jsonObjectArray[index].song_artist, Lyrics: jsonObjectArray[index].song_lyrics ?? "", Category: .Korean, SongPath: coverPath, SongLength: 0))
             print(jsonObjectArray[index].song_photo)

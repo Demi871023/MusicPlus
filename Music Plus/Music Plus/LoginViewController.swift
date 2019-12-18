@@ -25,7 +25,7 @@ struct SongInfo: Decodable{
     let song_album: String
     let song_artist: String
     let song_id: Int
-    let song_lyrics: String?
+    var song_lyrics: String?
     let song_name: String
     let song_photo: URL
 }
@@ -42,6 +42,7 @@ struct ListContent: Decodable{
 struct SongFindWithKey: Decodable{
     let song_id: Int
     let song_artist: String
+    var song_lyrics: String?
     let song_name: String
     let song_photo: URL
     let song_album: String

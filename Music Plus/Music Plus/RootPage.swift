@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import AVFoundation
 
-
 class RootViewController: UIViewController,FetchSelectRow{
     func fetchInt(rowNumber: Int) {
         if isViewLoaded
@@ -53,7 +52,7 @@ class RootViewController: UIViewController,FetchSelectRow{
     
     
     var loadcount = 0
-    
+    var SearchRecordFilePath = String()
     
     @IBOutlet weak var NowPlayingView: UIView!
     
@@ -66,11 +65,57 @@ class RootViewController: UIViewController,FetchSelectRow{
             self.performSegue(withIdentifier: "LogoutSegue", sender: self)
         }
     }
+    
+    //let SearchRecordFile:String = "SearchRecord.txt"
+    
+    let fileManger = FileManager.default
+    let UserSearchRecordFile = NSHomeDirectory() + "/Documents/SearchRecord.txt"
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         DispatchQueue.main.async(){
             self.NowPlayingView.isHidden = true
         }
+        let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        print(mainPath)
+        SearchRecordFilePath = mainPath + "/SearchRecord.txt"
+        //print(<#T##items: Any...##Any#>)
+        let SearchRecordFileIsExit = FileManager.default.fileExists(atPath: SearchRecordFilePath)
+        
+        print(SearchRecordFileIsExit)
+        //let path = try FileManager.default.url(for: .documentDirectory, in:.userDomainMask, appropriateFor: nil, create: true)
+        
+        if SearchRecordFileIsExit == false
+        {
+            print("Yes")
+            do{
+                fileManger.createFile(atPath:UserSearchRecordFile, contents: nil, attributes: nil)
+            }
+            catch
+            {
+                print("error")
+            }
+        }
+        else
+        {
+            print("File is exist")
+        }
+        
+        
+        /*var SearchRecordFileURL = URL(fileURLWithPath: UserSearchRecordFile)
+        
+        do{
+            var noBackUp = URLResourceValues()
+            noBackUp.isExcludedFromBackup = true
+            try SearchRecordFileURL.setResourceValues(noBackUp)
+        }
+        catch
+        {
+            print("noBackUp setting fail")
+        }*/
+        
         // Do any additional setup after loading the view.
     }
     
