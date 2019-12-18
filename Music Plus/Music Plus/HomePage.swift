@@ -98,48 +98,34 @@ var jsonSongFindObjectArray = [SongFindWithKey]()
 var SongFindArray = [SONGFIND]()
 var SongFindShowArray = [SONGFIND]()
 
+
+// 搜尋歌曲頁面
 class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
+    let tmp:String = "搜尋："
+    var KeyString:String = ""
+    
+    var KeyStringTmp:String = String()
+    
+    @IBOutlet weak var FindKeyLabel: UILabel!
     
     @IBOutlet weak var SongFindKeyTextField: UITextField!
     @IBOutlet weak var SongFindWithKeyTableView: UITableView!
     @IBOutlet weak var AddSuccessNotificationLabel: UILabel!
+    
+    @IBOutlet weak var SongFindRecordTableView: UITableView!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         SongFindWithKeyTableView?.delegate = self
         SongFindWithKeyTableView?.dataSource = self
-        
+        KeyStringTmp = tmp + KeyString
+        FindKeyLabel.text = KeyStringTmp
         DispatchQueue.main.async {
             self.AddSuccessNotificationLabel.isHidden = true
             // UIView usage
         }
-        
-        
-        /*let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
-        
-        // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
-        
-        var arrayOfStrings:Array<String> = Array()
-        
-        do {
-            // This solution assumes  you've got the file in your bundle
-            //if let path = Bundle.main.path(forResource: "YourTextFilename", ofType: "txt"){
-            /*let data = try String(contentsOfFile:fileURL.absoluteString, encoding: String.Encoding.utf8)
-                arrayOfStrings = data.components(separatedBy: "\n")
-                print(arrayOfStrings)*/
-            let text2 = try String(contentsOf: fileURL, encoding: .utf8)
-            print(text2)
-            arrayOfStrings = text2.components(separatedBy: "\n")
-            print(arrayOfStrings)
-
-        }
-        catch{
-            // do something with Error
-            print("Read error")
-        }*/
     }
     
     
@@ -147,15 +133,12 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         self.view.endEditing(true)
     }
     
-    
-    
     @IBAction func PostFindString(_ sender: Any) {
         
         SongFindArray.removeAll()
         SongFindShowArray.removeAll()
         
         let parameters:[String:Any] = ["key_str": self.SongFindKeyTextField.text] as! [String:Any]
-        
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/song/find") else {return}
         
@@ -396,16 +379,40 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         return 70
     }
     
+    /*func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return RecordStringArray.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = SongFindRecordTableView.dequeueReusableCell(withIdentifier: "cell", for:indexPath as IndexPath) as! SongFindRecordCell
+        
+        cell.RecordStringCell.text = RecordStringArray[indexPath.row]
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }*/
+    
 }
 
 var RecordStringArray:Array<String> = Array()
 
+
+// 搜尋紀錄頁面
 class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
     
+    // 判斷搜尋的 Key String 是來在點選 Table View 還是使用者輸入的 Text Field
+    var PostFromTextField:Bool = false
+    var SelectRow:Int = 0
+    
     @IBOutlet weak var SongFindRecordTableView: UITableView!
-    
-    
+    @IBOutlet weak var SongFindKeyTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -415,13 +422,7 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
         
         // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
-        
         do {
-            // This solution assumes  you've got the file in your bundle
-            //if let path = Bundle.main.path(forResource: "YourTextFilename", ofType: "txt"){
-            /*let data = try String(contentsOfFile:fileURL.absoluteString, encoding: String.Encoding.utf8)
-             arrayOfStrings = data.components(separatedBy: "\n")
-             print(arrayOfStrings)*/
             let text2 = try String(contentsOf: fileURL, encoding: .utf8)
             print(text2)
             RecordStringArray = text2.components(separatedBy: "\n")
@@ -448,20 +449,245 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = SongFindRecordTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! SongFindRecordCell
         cell.RecordStringCell.text = RecordStringArray[indexPath.row]
-        /*let coverPath = SongFindShowArray[indexPath.row].Cover.path
-        
-        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
-        cell.SongNameCell.text = SongFindShowArray[indexPath.row].SongName
-        cell.SingerCell.text = SongFindShowArray[indexPath.row].Singer
-        cell.LikeHeartButtonCell.tag = indexPath.row
-        cell.LikeHeartButtonCell.addTarget(self, action:  #selector(connected(sender:)), for: .touchUpInside)*/
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 50
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        PostFromTextField = false
+        SelectRow = indexPath.row
+        SongFindArray.removeAll()
+        SongFindShowArray.removeAll()
+        
+        let parameters:[String:Any] = ["key_str": RecordStringArray[indexPath.row]] as! [String:Any]
+        
+        
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/song/find") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+        
+        request.httpBody = httpBody
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request){
+            (data, response, error) in
+            if let response = response{
+                print(response)
+            }
+            
+            if let data = data{
+                do{
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    print(json)
+                    
+                    jsonSongFindObjectArray = try JSONDecoder().decode([SongFindWithKey].self, from: data)
+                    self.SetUpSongFindWithKey()
+                    print(SongFindArray)
+                }
+                catch{
+                    print(error)
+                }
+            }
+        }.resume()
+    }
+    
+    var CheckTextInSearchRecordFile:Bool = false
+    var SameKeyInSearchRecordFileRow:Int = 0
+    
+    @IBAction func PostKeyStringToDB(_ sender: Any) {
+        PostFromTextField = true
+        
+        SongFindArray.removeAll()
+        SongFindShowArray.removeAll()
+        
+        let parameters:[String:Any] = ["key_str": self.SongFindKeyTextField.text] as! [String:Any]
+        
+        
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/song/find") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+        
+        request.httpBody = httpBody
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request){
+            (data, response, error) in
+            if let response = response{
+                print(response)
+            }
+            
+            if let data = data{
+                do{
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    print(json)
+                    
+                    jsonSongFindObjectArray = try JSONDecoder().decode([SongFindWithKey].self, from: data)
+                    self.SetUpSongFindWithKey()
+                    print(SongFindArray)
+                }
+                catch{
+                    print(error)
+                }
+            }
+        }.resume()
+        
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        guard let fileURL = documentDirectory?.appendingPathComponent("SearchRecord.txt") else { return  }
+        
+        // 將搜尋的字加上換行寫入SearchRecord.txt檔案中
+        guard let tmp = SongFindKeyTextField.text else { return }
+        let text = tmp + "\n"
+        let record = text ?? ""
+        
+        do{
+            let fileUpdater = try FileHandle(forUpdating: fileURL)
+            // 移至檔案最後加入新的搜尋關鍵字
+            fileUpdater.seekToEndOfFile()
+            
+            for (index, element) in RecordStringArray.enumerated()
+            {
+                if RecordStringArray[index] == SongFindKeyTextField.text
+                {
+                    CheckTextInSearchRecordFile = true
+                    SameKeyInSearchRecordFileRow = index
+                }
+            }
+            
+            if CheckTextInSearchRecordFile == false
+            {
+                fileUpdater.write(record.data(using: .utf8)!)
+            }
+            
+            fileUpdater.closeFile()
+            print("Write Successful")
+        }
+        catch
+        {
+            print("Write Error")
+        }
+        
+    }
+    
+    
+    func SetUpSongFindWithKey()
+    {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        for (index, element) in jsonSongFindObjectArray.enumerated()
+        {
+            let singer = jsonSongFindObjectArray[index].song_artist
+            let album = jsonSongFindObjectArray[index].song_album
+            let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
+            
+            if jsonSongFindObjectArray[index].song_lyrics == nil
+            {
+                jsonSongFindObjectArray[index].song_lyrics = "目前無歌詞"
+            }
+            
+            SongFindArray.append(SONGFIND(Id: jsonSongFindObjectArray[index].song_id, Cover: coverPath, Lyric: jsonSongFindObjectArray[index].song_lyrics ?? "", SongName: jsonSongFindObjectArray[index].song_name, Singer: jsonSongFindObjectArray[index].song_artist, Album: jsonSongFindObjectArray[index].song_album))
+            
+            downloadSongCover(url: jsonSongFindObjectArray[index].song_photo, singer: jsonSongFindObjectArray[index].song_artist, album: jsonSongFindObjectArray[index].song_album)
+        }
+        SongFindShowArray = SongFindArray
+        print(SongFindShowArray)
+        print(SongFindShowArray.count)
+        
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "FindSongWithKeySegue", sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! HomePVCFind
+        // 搜尋關鍵字來自點擊 Table View Row
+        if PostFromTextField == false
+        {
+            vc.KeyString = RecordStringArray[SelectRow]
+        }
+        // 搜尋關鍵字來自使用者自行輸入的 TextField
+        if PostFromTextField == true
+        {
+            vc.KeyString = SongFindKeyTextField.text ?? ""
+        }
+    }
+    
+    var albumPath = String()
+    
+    func downloadSongCover(url: URL, singer:String, album:String){
+        let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        //print(mainPath)
+        let singerPath = mainPath + "/" + singer
+        
+        let TestCoverPath = mainPath + "/" + singer + "/" + album + "/cover.jpg"
+        
+        let CoverIsExit = FileManager.default.fileExists(atPath: TestCoverPath)
+        
+        if CoverIsExit == false
+        {
+            //var directoryforsinger:ObjCBool = true
+            let singerIsExit = FileManager.default.fileExists(atPath: singerPath)
+            
+            if singerIsExit == false
+            {
+                do{
+                    try FileManager.default.createDirectory(atPath: singerPath, withIntermediateDirectories: true, attributes: nil)
+                }catch
+                {
+                    print("error")
+                }
+            }
+            
+            albumPath = singerPath + "/" + album
+            let albumIsExit = FileManager.default.fileExists(atPath: albumPath)
+            if albumIsExit == false
+            {
+                do{
+                    try FileManager.default.createDirectory(atPath: albumPath, withIntermediateDirectories: true, attributes: nil)
+                }
+                catch
+                {
+                    print("error")
+                }
+            }
+            
+            let downloadRequest = URLRequest(url: url)
+            URLSession.shared.downloadTask(with: downloadRequest) { location, response, error in
+                guard  let tempLocation = location, error == nil else { return }
+                let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let targetDirectory = documentDirectory.appendingPathComponent(singer+"/"+album)
+                do {
+                    let fullURL = try targetDirectory.appendingPathComponent((response?.suggestedFilename!)!)
+                    let coverIsExit = FileManager.default.fileExists(atPath: self.albumPath+"/cover.jpg")
+                    if coverIsExit == false
+                    {
+                        print(fullURL)
+                        try FileManager.default.moveItem(at: tempLocation, to: fullURL)
+                        print("saved at \(fullURL) \n")
+                    }
+                    
+                }catch CocoaError.fileReadNoSuchFileError {
+                    print("No such file")
+                } catch {
+                    // other errors
+                    isDownload = 1
+                    print("Error downloading file : \(error)")
+                }
+            }.resume()
+        }
+        
+        
+    }
     
     
     /*func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

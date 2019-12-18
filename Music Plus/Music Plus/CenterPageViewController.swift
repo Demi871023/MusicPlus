@@ -83,7 +83,7 @@ class HomePVC: UIPageViewController {
         return [
             UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRank") as! HomePVCRank,
             UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecommend") as! HomePVCRecommend,
-            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCFind") as! HomePVCFind
+            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecord") as! HomePVCRecord
         ]
     }()
     

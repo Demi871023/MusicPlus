@@ -1,3 +1,5 @@
+/* 2019.12.18 更新搜尋紀錄版本 */
+
 //
 //  ViewController.swift
 //  Music Plus

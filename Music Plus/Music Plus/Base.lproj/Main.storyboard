@@ -1604,7 +1604,7 @@
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Fzi-ZV-cXV">
-                                <rect key="frame" x="34" y="88" width="346" height="426"/>
+                                <rect key="frame" x="32" y="166" width="346" height="708"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -1651,36 +1651,34 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="已成功新增此歌曲" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lw-RM-i1I">
-                                <rect key="frame" x="124" y="588" width="166" height="21"/>
+                                <rect key="frame" x="121" y="853" width="166" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cay-in-jqA">
-                                <rect key="frame" x="155" y="536" width="46" height="30"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="搜尋：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngS-Jw-BJR">
+                                <rect key="frame" x="32" y="115" width="346" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <segue destination="pTh-vp-aa2" kind="show" id="B9S-dh-SsB"/>
-                                </connections>
-                            </button>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <color key="textColor" red="1" green="0.66786530180000003" blue="0.2451780928" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="maf-pn-VbE"/>
                     </view>
                     <connections>
                         <outlet property="AddSuccessNotificationLabel" destination="3Lw-RM-i1I" id="b1G-OQ-C3f"/>
+                        <outlet property="FindKeyLabel" destination="ngS-Jw-BJR" id="jxn-Fq-FF2"/>
                         <outlet property="SongFindKeyTextField" destination="Eky-gp-iMu" id="2Yv-yc-mh4"/>
                         <outlet property="SongFindWithKeyTableView" destination="Fzi-ZV-cXV" id="yiT-9s-33C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qgA-bV-SMH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8837.68115942029" y="-853.125"/>
+            <point key="canvasLocation" x="10554" y="-633"/>
         </scene>
         <!--HomePVC Record-->
         <scene sceneID="eU0-YE-vq9">
@@ -1703,9 +1701,9 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Record" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OxW-4a-xCw">
-                                                    <rect key="frame" x="38" y="18" width="271" height="21"/>
+                                                    <rect key="frame" x="20" y="19" width="271" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1718,7 +1716,7 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="請輸入您想搜尋的歌手或歌名" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aQx-y2-iX4">
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="請輸入您想搜尋的歌手或歌名" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="aQx-y2-iX4">
                                 <rect key="frame" x="34" y="44" width="292" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
@@ -1731,6 +1729,9 @@
                                 <color key="backgroundColor" red="1" green="0.66786530180000003" blue="0.2451780928" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="搜尋"/>
+                                <connections>
+                                    <action selector="PostKeyStringToDB:" destination="pTh-vp-aa2" eventType="touchUpInside" id="7JP-if-3xt"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="最近搜尋" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2BN-gC-34T">
                                 <rect key="frame" x="34" y="96" width="120" height="36"/>
@@ -1744,8 +1745,10 @@
                         <viewLayoutGuide key="safeArea" id="z80-MB-sYx"/>
                     </view>
                     <connections>
+                        <outlet property="SongFindKeyTextField" destination="aQx-y2-iX4" id="UMh-mr-Rbc"/>
                         <outlet property="SongFindRecordTableView" destination="VQY-J3-BHb" id="6G7-V6-5et"/>
                         <outlet property="searchDisplayController" destination="JZ7-Ck-IK1" id="G0R-Wh-i6Y"/>
+                        <segue destination="IOT-A9-0qn" kind="show" identifier="FindSongWithKeySegue" id="GgV-hf-yhi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="brj-te-DS5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2131,7 +2134,7 @@
                     <connections>
                         <segue destination="0sv-62-Mpa" kind="show" id="geR-Ay-sFH"/>
                         <segue destination="cHc-T1-QyL" kind="show" id="ueu-Yq-Df3"/>
-                        <segue destination="IOT-A9-0qn" kind="show" id="1Xk-eG-lsc"/>
+                        <segue destination="pTh-vp-aa2" kind="show" id="k3d-Q7-gI2"/>
                     </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6fA-ZW-wBW" userLabel="First Responder" sceneMemberID="firstResponder"/>
