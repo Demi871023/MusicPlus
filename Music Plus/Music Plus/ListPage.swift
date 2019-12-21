@@ -30,6 +30,7 @@ var MyListSongId:Array<Int> = Array()
 
 
 
+
 protocol FetchSelectRow {
     func fetchInt(rowNumber:Int)
 }
@@ -310,6 +311,7 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         print(SongHaveNumber)
         DispatchQueue.main.async{
             self.MusicListTableView.reloadData()
+            //AVQueuePlayer(items: [SongArray])
         }
     }
     
@@ -638,6 +640,7 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let vc = segue.destination as! FifthPageViewController
         vc.songindex = selectSongNumber
+        SongRemain = Int(audioPlayer.duration)
     }
     
     //var songs:[String] = []
@@ -723,6 +726,7 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
                 audioPlayer = try AVAudioPlayer(contentsOf: songPath)
                 DispatchQueue.main.async(){ self.NowPlayingPlayButton.isSelected = true
                 }
+                
                 audioPlayer.play()
                 DispatchQueue.main.async(){
                     self.NowPlayingCoverImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)

@@ -158,6 +158,9 @@ class ListPVC: UIPageViewController{
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
+        dataSource = self
+        delegate = self
+        setViewControllerFromIndex(index: 0)
         // Do any additional setup after loading the view.
     }
     

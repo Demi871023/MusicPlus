@@ -183,9 +183,11 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         do{
             let fileUpdater = try FileHandle(forUpdating: fileURL)
             // 移至檔案最後加入新的搜尋關鍵字
+            //fileUpdater.seek(toFileOffset: 3)
             fileUpdater.seekToEndOfFile()
             fileUpdater.write(record.data(using: .utf8)!)
             fileUpdater.closeFile()
+        
             print("Write Successful")
         }
         catch
@@ -426,6 +428,7 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
             let text2 = try String(contentsOf: fileURL, encoding: .utf8)
             print(text2)
             RecordStringArray = text2.components(separatedBy: "\n")
+            RecordStringArray.remove(at: RecordStringArray.count - 1)
             print(RecordStringArray)
             
         }
@@ -448,7 +451,7 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = SongFindRecordTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! SongFindRecordCell
-        cell.RecordStringCell.text = RecordStringArray[indexPath.row]
+        cell.RecordStringCell.text = RecordStringArray[(RecordStringArray.count - indexPath.row - 1)]
         return cell
     }
     
@@ -463,7 +466,7 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         SongFindArray.removeAll()
         SongFindShowArray.removeAll()
         
-        let parameters:[String:Any] = ["key_str": RecordStringArray[indexPath.row]] as! [String:Any]
+        let parameters:[String:Any] = ["key_str": RecordStringArray[(RecordStringArray.count - indexPath.row - 1)]] as! [String:Any]
         
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/song/find") else {return}
@@ -554,7 +557,8 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         do{
             let fileUpdater = try FileHandle(forUpdating: fileURL)
             // 移至檔案最後加入新的搜尋關鍵字
-            fileUpdater.seekToEndOfFile()
+            //fileUpdater.seek(toFileOffset: 0)
+            //fileUpdater.seekToEndOfFile()
             
             for (index, element) in RecordStringArray.enumerated()
             {
@@ -565,9 +569,14 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
             }
             
+            // 若沒有搜尋過之前找過的，就寫入檔案並重載入Table
             if CheckTextInSearchRecordFile == false
             {
+                fileUpdater.seekToEndOfFile()
                 fileUpdater.write(record.data(using: .utf8)!)
+                RecordStringArray.append(tmp)
+                SongFindRecordTableView.reloadData()
+                SongFindKeyTextField.text = ""
             }
             
             fileUpdater.closeFile()
@@ -613,7 +622,7 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         // 搜尋關鍵字來自點擊 Table View Row
         if PostFromTextField == false
         {
-            vc.KeyString = RecordStringArray[SelectRow]
+            vc.KeyString = RecordStringArray[(RecordStringArray.count - SelectRow - 1)]
         }
         // 搜尋關鍵字來自使用者自行輸入的 TextField
         if PostFromTextField == true

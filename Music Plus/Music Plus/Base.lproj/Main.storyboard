@@ -1187,11 +1187,18 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="tintColor" red="1" green="0.66786530180000003" blue="0.2451780928" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </slider>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fb6-p6-rUr">
-                                        <rect key="frame" x="354" y="12" width="42" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fb6-p6-rUr">
+                                        <rect key="frame" x="354" y="13" width="49" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="24x-Y3-Cfe">
+                                        <rect key="frame" x="13" y="13" width="51" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -1245,6 +1252,15 @@
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c4l-zE-feE">
+                                <rect key="frame" x="16" y="641" width="45" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="playlistcircle.png"/>
+                                <state key="selected" image="onesongcircle.png"/>
+                                <connections>
+                                    <action selector="ChooseSongRepeat:" destination="iJp-vM-01K" eventType="touchUpInside" id="btK-mE-p8h"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1257,6 +1273,7 @@
                         <outlet property="LyricTextView" destination="TPV-8z-JGd" id="aur-5h-fJg"/>
                         <outlet property="SingerText" destination="XZF-vF-WAp" id="b23-7L-Wde"/>
                         <outlet property="SongLengthMaxText" destination="Fb6-p6-rUr" id="3cC-9u-snf"/>
+                        <outlet property="SongLengthMinText" destination="24x-Y3-Cfe" id="oyr-LI-Jti"/>
                         <outlet property="SongNameText" destination="aGj-oR-ca4" id="137-4Q-4f2"/>
                         <outlet property="SongPlayButton" destination="dvx-RB-DIP" id="fOy-vB-cJZ"/>
                         <outlet property="SongSlider" destination="Bp8-Fw-2F3" id="vY0-31-a9b"/>
@@ -1264,7 +1281,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ret-mO-uOk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4742.0289855072469" y="578.23660714285711"/>
+            <point key="canvasLocation" x="4742.0289855072469" y="577.23214285714278"/>
         </scene>
         <!--List Page-->
         <scene sceneID="jCG-w2-id1">
@@ -2512,10 +2529,12 @@
         <image name="music icon" width="512" height="512"/>
         <image name="nextsong" width="202" height="202"/>
         <image name="nextsong.png" width="151.5" height="151.5"/>
+        <image name="onesongcircle.png" width="151.5" height="151.5"/>
         <image name="pause" width="202" height="202"/>
         <image name="pause.png" width="151.5" height="151.5"/>
         <image name="play" width="202" height="202"/>
         <image name="play.png" width="151.5" height="151.5"/>
+        <image name="playlistcircle.png" width="151.5" height="151.5"/>
         <image name="upsong" width="202" height="202"/>
         <image name="upsong.png" width="151.5" height="151.5"/>
     </resources>

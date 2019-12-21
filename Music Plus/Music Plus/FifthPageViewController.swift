@@ -12,11 +12,20 @@ import AVFoundation
 
 // PlaySong
 
-var timer: Timer?
+
 var timerCheckIndex: Timer?
 var LyricShow:Bool = false
+var SongRemain = 0
+var SongRemainMinute = 0
+var SongRemainSecond = 0
+var SongElapsed = 0
+var SongElapsedMinute = 0
+var SongElapsedSecond = 0
+var LoopControl:Bool = false
 
 class FifthPageViewController: UIViewController, FetchSelectRow{
+    
+    var timer: Timer?
     
     @IBOutlet weak var CoverImage: UIImageView!
     @IBOutlet weak var SongNameText: UILabel!
@@ -27,6 +36,7 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
     @IBOutlet weak var SongProgress: UIProgressView!
     @IBOutlet weak var SongSlider: UISlider!
     @IBOutlet weak var SongLengthMaxText: UILabel!
+    @IBOutlet weak var SongLengthMinText: UILabel!
     
     func fetchInt(rowNumber: Int) {
         if isViewLoaded
@@ -55,10 +65,35 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
         audioPlayer.currentTime = TimeInterval(_sender.value)
     }
     
+    
+    
+    
+    @IBAction func ChooseSongRepeat(_ sender: UIButton) {
+        
+        if(sender.isSelected)
+        {
+            sender.isSelected = false
+            LoopControl = false
+            // 單首不重複播放
+            audioPlayer.numberOfLoops = 0
+            print(audioPlayer.numberOfChannels)
+            print("List Song Repeate")
+        }
+        else
+        {
+            sender.isSelected = true
+            LoopControl = true
+            // 單首重複播放
+            audioPlayer.numberOfLoops = -1
+            print("One Song Repeat")
+        }
+    }
+    
+    
     func SetUpSongSlider()
     {
         SongSlider.minimumValue = 0
-        //SongSlider.maximumValue = Float(audioPlayer.duration)
+        SongSlider.maximumValue = Float(SongRemain)
         SongSlider.addTarget(self, action: #selector(FifthPageViewController.SongSliderChangeAct), for: .touchUpInside)
         if timer == nil
         {
@@ -78,22 +113,64 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
     @objc func UpdateSongSlider()
     {
         SongSlider.value = Float(audioPlayer.currentTime)
+        SongRemain = Int(audioPlayer.duration) - Int(audioPlayer.currentTime)
+        SongElapsed = Int(audioPlayer.currentTime)
+        
+        SongRemainMinute = SongRemain / 60
+        SongRemainSecond = SongRemain - (SongRemainMinute * 60)
+        if(SongRemainSecond < 10)
+        {
+            SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":0" + String(SongRemainSecond)
+        }
+        else
+        {
+            SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":" + String(SongRemainSecond)
+        }
+        
+        SongElapsedMinute = SongElapsed / 60
+        SongElapsedSecond = SongElapsed - (SongElapsedMinute * 60)
+        if(SongElapsedSecond < 10)
+        {
+            SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":0" + String(SongElapsedSecond)
+        }
+        else
+        {
+            SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":" + String(SongElapsedSecond)
+        }
+        
+        if(SongRemain == 1)
+        {
+            print("Last one second")
+        }
     }
     
     
     var songindex = 0
     
-    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
-        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if isViewLoaded
+        SongRemainMinute = SongRemain / 60
+        SongRemainSecond = SongRemain - (SongRemainMinute * 60)
+        if(SongRemainSecond < 10)
         {
-            print("Load!")
+            SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":0" + String(SongRemainSecond)
         }
+        else
+        {
+            SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":" + String(SongRemainSecond)
+        }
+        
+        SongElapsedMinute = SongElapsed / 60
+        SongElapsedSecond = SongElapsed - (SongElapsedMinute * 60)
+        if(SongElapsedSecond < 10)
+        {
+            SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":0" + String(SongElapsedSecond)
+        }
+        else
+        {
+            SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":" + String(SongElapsedSecond)
+        }
+        
         
         SongPlayButton.isSelected = true
         
@@ -110,7 +187,7 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
         BackgroundImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
         BackgroundImage.addSubview(blurEffectView)
         
-        SongSlider.minimumValue = 0
+        SetUpSongSlider()
         
         DispatchQueue.main.async(){
             self.LyricTextView.isHidden = true
@@ -160,7 +237,6 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
         }
     }
     
-    
     @IBAction func NextSong(_ sender: Any) {
         if(selectSongNumber + 1 == SongHaveNumber)
         {
@@ -179,6 +255,37 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
             do{
                 audioPlayer = try AVAudioPlayer(contentsOf: songPath)
                 audioPlayer.play()
+                SongRemain = Int(audioPlayer.duration)
+                if LoopControl == true
+                {
+                    audioPlayer.numberOfLoops = -1
+                }
+                else
+                {
+                    audioPlayer.numberOfLoops = 0
+                }
+                SetUpSongSlider()
+                SongRemainMinute = SongRemain / 60
+                SongRemainSecond = SongRemain - (SongRemainMinute * 60)
+                if(SongRemainSecond < 10)
+                {
+                    SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":0" + String(SongRemainSecond)
+                }
+                else
+                {
+                    SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":" + String(SongRemainSecond)
+                }
+                
+                SongElapsedMinute = SongElapsed / 60
+                SongElapsedSecond = SongElapsed - (SongElapsedMinute * 60)
+                if(SongElapsedSecond < 10)
+                {
+                    SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":0" + String(SongElapsedSecond)
+                }
+                else
+                {
+                    SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":" + String(SongElapsedSecond)
+                }
             }
             catch{
                 
@@ -211,6 +318,37 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
             do{
                 audioPlayer = try AVAudioPlayer(contentsOf: songPath)
                 audioPlayer.play()
+                SongRemain = Int(audioPlayer.duration)
+                if LoopControl == true
+                {
+                    audioPlayer.numberOfLoops = -1
+                }
+                else
+                {
+                    audioPlayer.numberOfLoops = 0
+                }
+                SetUpSongSlider()
+                SongRemainMinute = SongRemain / 60
+                SongRemainSecond = SongRemain - (SongRemainMinute * 60)
+                if(SongRemainSecond < 10)
+                {
+                    SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":0" + String(SongRemainSecond)
+                }
+                else
+                {
+                    SongLengthMaxText.text = "0" + String(SongRemainMinute) + ":" + String(SongRemainSecond)
+                }
+                
+                SongElapsedMinute = SongElapsed / 60
+                SongElapsedSecond = SongElapsed - (SongElapsedMinute * 60)
+                if(SongElapsedSecond < 10)
+                {
+                    SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":0" + String(SongElapsedSecond)
+                }
+                else
+                {
+                    SongLengthMinText.text = "0" + String(SongElapsedMinute) + ":" + String(SongElapsedSecond)
+                }
             }
             catch{
                 
