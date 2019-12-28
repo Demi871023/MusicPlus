@@ -153,6 +153,26 @@ class SongFindRecordCell: UITableViewCell{
     }
 }
 
+class PersonalRecommendCell: UITableViewCell{
+    
+    @IBOutlet weak var CoverCell: UIImageView!
+    @IBOutlet weak var SongNameCell: UILabel!
+    @IBOutlet weak var SingerCell: UILabel!
+    @IBOutlet weak var LikeHeartButtonCell: UIButton!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        
+        // Configure the view for the selected state
+    }
+
+}
+
 class ThemeListCollectionViewCell:UICollectionViewCell {
     
     @IBOutlet weak var ThemeListButton: UIButton!

@@ -19,6 +19,7 @@ var UserId:Int = 0
 struct LoginToken: Decodable{
     let Check: String
     let user_id: Int
+    let user_nickname: String
 }
 
 struct SongInfo: Decodable{
@@ -57,12 +58,23 @@ struct UserInfo: Decodable{
     //let user_photo: String
 }
 
-
 struct MyList : Decodable {
     let personal_list: [String]
     enum CodingKeys: String, CodingKey {
         case personal_list
     }
+}
+
+struct MyRecommend: Decodable{
+    let Recommend_list: [String]
+}
+
+struct GenreList: Decodable{
+    let SondList: [String]
+    enum CodingKeys: String, CodingKey {
+        case SondList
+    }
+    
 }
 
 /*struct MyListSongId{
@@ -146,6 +158,7 @@ class LoginViewController: UIViewController{
                     print(json)
                     let json2 = try JSONDecoder().decode(LoginToken.self, from: data)
                     UserId = json2.user_id
+                    UserNickName = json2.user_nickname
                     self.token = json2.Check
                     if self.token == "Yes"
                     {
@@ -250,5 +263,6 @@ class LoginViewController: UIViewController{
 class LoginNavigationController:UINavigationController{
     override func viewDidLoad() {
         super.viewDidLoad()
+        
     }
 }

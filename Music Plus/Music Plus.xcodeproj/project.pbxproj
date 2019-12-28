@@ -374,6 +374,11 @@
 					};
 					837AE3D6233319C7001D832E = {
 						CreatedOnToolsVersion = 10.3;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					837AE3EA233319C8001D832E = {
 						CreatedOnToolsVersion = 10.3;

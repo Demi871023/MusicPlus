@@ -75,6 +75,9 @@ class RootViewController: UIViewController,FetchSelectRow{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationController?.isNavigationBarHidden = true
+
         DispatchQueue.main.async(){
             self.NowPlayingView.isHidden = true
         }

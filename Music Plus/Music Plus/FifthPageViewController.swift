@@ -14,7 +14,8 @@ import AVFoundation
 
 
 var timerCheckIndex: Timer?
-var LyricShow:Bool = false
+var LyricShow:Bool = true
+var CoverShow:Bool = false
 var SongRemain = 0
 var SongRemainMinute = 0
 var SongRemainSecond = 0
@@ -149,6 +150,12 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+   
+        self.navigationController?.isNavigationBarHidden = true
+        //let image = UIImage()
+        //self.navigationController?.navigationBar.setBackgroundImage(image, for: .default)
+        //self.navigationController?.navigationBar.isTranslucent = true
+
         SongRemainMinute = SongRemain / 60
         SongRemainSecond = SongRemain - (SongRemainMinute * 60)
         if(SongRemainSecond < 10)
@@ -190,27 +197,32 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
         SetUpSongSlider()
         
         DispatchQueue.main.async(){
-            self.LyricTextView.isHidden = true
+            self.LyricTextView.isHidden = LyricShow
+                self.CoverImage.isHidden = CoverShow
         }
     }
  
     
     @IBAction func ButtonShowLyricTapped(_ sender: UIButton) {
-        if(LyricShow == false)
+        if(LyricShow == true)
         {
             print("Show Lyric")
             DispatchQueue.main.async(){
                 self.LyricTextView.isHidden = false
+                    self.CoverImage.isHidden = true
             }
-            LyricShow = true
+            LyricShow = false
+            CoverShow = true
         }
         else
         {
             print("Close Lyric!")
             DispatchQueue.main.async(){
                 self.LyricTextView.isHidden = true
+                self.CoverImage.isHidden = false
             }
-            LyricShow = false
+            LyricShow = true
+            CoverShow = false
         }
     }
     
@@ -238,17 +250,17 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
     }
     
     @IBAction func NextSong(_ sender: Any) {
-        if(selectSongNumber + 1 == SongHaveNumber)
+        if(songindex + 1 == SongHaveNumber)
         {
             print("已經是最後一首！")
         }
         else
         {
             SongPlayButton.isSelected = true
-            selectSongNumber = selectSongNumber + 1
-            let singer = SongSearchArray[selectSongNumber].Singer
-            let album = SongSearchArray[selectSongNumber].Album
-            let song = SongSearchArray[selectSongNumber].SongName
+            songindex = songindex + 1
+            let singer = SongSearchArray[songindex].Singer
+            let album = SongSearchArray[songindex].Album
+            let song = SongSearchArray[songindex].SongName
             let mainDirector = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             let songPath = mainDirector.appendingPathComponent(singer+"/"+album+"/"+song+".mp3")
             
@@ -291,27 +303,27 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
                 
             }
             
-            CoverImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
-            SongNameText.text = SongSearchArray[selectSongNumber].SongName
-            SingerText.text = SongSearchArray[selectSongNumber].Singer
-            LyricTextView.text = SongSearchArray[selectSongNumber].Lyrics
-            BackgroundImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
+            CoverImage.image = UIImage(contentsOfFile: SongSearchArray[songindex].Cover.path)
+            SongNameText.text = SongSearchArray[songindex].SongName
+            SingerText.text = SongSearchArray[songindex].Singer
+            LyricTextView.text = SongSearchArray[songindex].Lyrics
+            BackgroundImage.image = UIImage(contentsOfFile: SongSearchArray[songindex].Cover.path)
         }
     }
     
     
     @IBAction func PreSong(_ sender: Any) {
-        if(selectSongNumber - 1 < 0)
+        if(songindex - 1 < 0)
         {
             print("已經沒有前面一首！！！")
         }
         else
         {
             SongPlayButton.isSelected = true
-            selectSongNumber = selectSongNumber - 1
-            let singer = SongSearchArray[selectSongNumber].Singer
-            let album = SongSearchArray[selectSongNumber].Album
-            let song = SongSearchArray[selectSongNumber].SongName
+            songindex = songindex - 1
+            let singer = SongSearchArray[songindex].Singer
+            let album = SongSearchArray[songindex].Album
+            let song = SongSearchArray[songindex].SongName
             let mainDirector = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             let songPath = mainDirector.appendingPathComponent(singer+"/"+album+"/"+song+".mp3")
             
@@ -353,11 +365,11 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
             catch{
                 
             }
-            CoverImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
-            SongNameText.text = SongSearchArray[selectSongNumber].SongName
-            SingerText.text = SongSearchArray[selectSongNumber].Singer
-            LyricTextView.text = SongSearchArray[selectSongNumber].Lyrics
-            BackgroundImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
+            CoverImage.image = UIImage(contentsOfFile: SongSearchArray[songindex].Cover.path)
+            SongNameText.text = SongSearchArray[songindex].SongName
+            SingerText.text = SongSearchArray[songindex].Singer
+            LyricTextView.text = SongSearchArray[songindex].Lyrics
+            BackgroundImage.image = UIImage(contentsOfFile: SongSearchArray[songindex].Cover.path)
         }
         
     }

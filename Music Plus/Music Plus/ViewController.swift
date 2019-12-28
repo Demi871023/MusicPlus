@@ -173,6 +173,15 @@ class UserProfileViewController: UIViewController{
     
     override func viewDidLoad() {
         
+        self.navigationController?.isNavigationBarHidden = false
+        
+        self.navigationController?.navigationBar.tintColor = UIColor.orange
+        // 讓 navigationController 的背景變成透明
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        //self.navigationController?.navigationBar.backgroundColor = UIColor.clear
         GetUserInfo()
         //NickNameTextField.text = "Demi871023"
         //EmailTextField.text = "demi871023@gmail.com"

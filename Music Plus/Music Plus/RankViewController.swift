@@ -8,50 +8,276 @@
 
 import Foundation
 import Charts
+//var jsonObjectArray = [SongInfo]()
+var SongData = [SongInfomation]()
+var SongChooseTop3Array = [SongChooseTop3]()
+var jsongObjectRankData = [Top3type]()
+
+let tmpYaris:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+
+struct Top3type: Decodable{
+    let song_name: String
+    let rank: [Int]
+}
+
+struct SongInfomation: Decodable{
+    let rank_id: Int
+    let song_id: Int
+    let song_name: String
+    let song_artist: String?
+    let song_album: String?
+    let song_photo: URL?
+    let song_lyrics: String?
+}
 
 class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
+    
+    @IBOutlet weak var Line1SongNameLabel: UILabel!
+    @IBOutlet weak var Line2SongNameLabel: UILabel!
+    @IBOutlet weak var Line3SongNameLabel: UILabel!
+    @IBOutlet weak var Line4SongNameLabel: UILabel!
+    
+    var CSongNameChartLabelArray:Array<UILabel> = Array()
+    
+    var CSongRankChartSongName:Array<String> = Array()
+    
     
     @IBOutlet weak var LineCChartView: LineChartView!
     @IBOutlet weak var CChartTableView: UITableView!
     
     var CSongRankArray = [SongRank]()
     
-    let yarisTime:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+    var yarisTime:Array<String> = Array()
     
     let data = LineChartData()
     
     var basicData:Array<Double> = []
-    var Rank1LineData:Array<Double> = [] // Line Chart 中的 數據點
-    var Rank2LineData:Array<Double> = []
-    var Rank3LineData:Array<Double> = []
+    var RankLineData = [[Double]](repeating: [Double](repeating: 0, count: 24), count: 10) // Line Chart 中的 數據點
     
     var Rank1LineDataSet = LineChartDataSet()
     var Rank2LineDataSet = LineChartDataSet()
     var Rank3LineDataSet = LineChartDataSet()
+    var Rank4LineDataSet = LineChartDataSet()
+    var Rank5LineDataSet = LineChartDataSet()
+    var Rank6LineDataSet = LineChartDataSet()
+    var Rank7LineDataSet = LineChartDataSet()
+    var Rank8LineDataSet = LineChartDataSet()
+    var Rank9LineDataSet = LineChartDataSet()
+    var Rank10LineDataSet = LineChartDataSet()
     
     var basicArray:[ChartDataEntry] = []
     var Rank1LineArray:[ChartDataEntry] = []
     var Rank2LineArray:[ChartDataEntry] = []
     var Rank3LineArray:[ChartDataEntry] = []
+    var Rank4LineArray:[ChartDataEntry] = []
+    var Rank5LineArray:[ChartDataEntry] = []
+    var Rank6LineArray:[ChartDataEntry] = []
+    var Rank7LineArray:[ChartDataEntry] = []
+    var Rank8LineArray:[ChartDataEntry] = []
+    var Rank9LineArray:[ChartDataEntry] = []
+    var Rank10LineArray:[ChartDataEntry] = []
+    
+    var RankData:[Top3type] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        self.navigationController?.isNavigationBarHidden = false
+        //self.navigationController?.navigationBar.topItem?.title = "華語排行榜"
+        self.navigationController?.navigationBar.tintColor = UIColor.orange
+        // 讓 navigationController 的背景變成透明
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        let now:Date = Date()
+        let dateFormat:DateFormatter = DateFormatter()
+        dateFormat.dateFormat = "HH"
+        let dataString:String = dateFormat.string(from: now)
+        
+        for (index, element) in tmpYaris.enumerated()
+        {
+            var nowtime:Int = Int(dataString) ?? 0
+            var targetTime:Int = Int(tmpYaris[index]) ?? 0
+            var setTime = (nowtime + targetTime) % 24 + 1
+            if setTime == 24
+            {
+                setTime = 0
+            }
+            yarisTime.append(String(setTime))
+        }
+        
+        SongChooseTop3Array.removeAll()
+        jsongObjectRankData.removeAll()
+        
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/ctop") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    //print(json)
+                    jsongObjectRankData = try JSONDecoder().decode([Top3type].self, from:data)
+                    print(jsongObjectRankData)
+                    
+                    for (index, element) in jsongObjectRankData.enumerated()
+                    {
+                        var GradeTotal = 0
+                        var RankNowInt = 0
+                        for (i, element) in jsongObjectRankData[index].rank.enumerated()
+                        {
+                            if i == 23
+                            {
+                                if jsongObjectRankData[index].rank[i] == 3
+                                {
+                                    RankNowInt = 1
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 2
+                                {
+                                    RankNowInt = 2
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 1
+                                {
+                                    RankNowInt = 3
+                                }
+                                else if jsongObjectRankData[index].rank[i] == -1
+                                {
+                                    RankNowInt = -1
+                                }
+                            }
+                            if jsongObjectRankData[index].rank[i] == -1
+                            {
+                                continue
+                            }
+                            GradeTotal = GradeTotal + jsongObjectRankData[index].rank[i]
+                        }
+                        print(jsongObjectRankData[index].song_name)
+                        print(GradeTotal)
+                        print("Rank", RankNowInt)
+                        
+                        // LineId 紀錄此筆是jsongObjectRankData的第幾筆
+                        SongChooseTop3Array.append(SongChooseTop3(LineId: index, SongName: jsongObjectRankData[index].song_name, Grade: GradeTotal, RankNow: RankNowInt))
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
+        
+        GetTop50()
         
         LineCChartView.noDataText = "You need to provide data for the chart"
         basicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        Rank1LineData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-        Rank2LineData = [2, 4, 5, 9, 10, 11, 12, 15, 12, 12, 12 , 11, 10, 10, 10, 13, 15, 16, 18, 18, 18, 20, 22, 25]
-        Rank3LineData = [1, 2, 3, 4 ,5, 6, 7, 8, 10, 11, 13, 15, 16, 15, 14, 14, 14, 14, 14, 14, 15, 15, 16, 17]
-        SetUpLineCChart(name: yarisTime, basic: basicData, values1: Rank1LineData, values2: Rank2LineData, values3:Rank3LineData)
-        //let count = Int(arc4random_uniform(20) + 3)
-        //setChartValues(count)
-        UpdateRankSongs()
+        LineCChartView.noDataText = "You need to provide data for the chart"
+        
+        basicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[1] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[2] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[3] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[4] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[5] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[6] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[7] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[8] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
     
-    func SetUpLineCChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double])
+    func GetTop50()
     {
+        CSongRankArray.removeAll()
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/crank") else {return}
         
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    let SongData = try JSONDecoder().decode([SongInfomation].self, from:data)
+                    
+                    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    
+                    for (index, element) in SongData.enumerated()
+                    {
+                        let singer = SongData[index].song_artist ?? ""
+                        let album = SongData[index].song_album ?? ""
+                        
+                        let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
+                        self.CSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        
+                        
+                        //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
+                    }
+                    
+                    DispatchQueue.main.async(){
+                        //print(self.KSongRankArray.count)
+                        self.CChartTableView.reloadData()
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
+    }
+    
+    func run(after seconds: Int, completion: @escaping () -> Void)
+    {
+        let deadline = DispatchTime.now() + .seconds(seconds)
+        DispatchQueue.main.asyncAfter(deadline:deadline)
+        {
+            completion()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        run(after: 1)
+        {
+            for (index, element) in jsongObjectRankData.enumerated()
+            {
+                self.CSongRankChartSongName.append(jsongObjectRankData[index].song_name)
+                for(i, element) in jsongObjectRankData[index].rank.enumerated()
+                {
+                    self.RankLineData[index][i] = Double(jsongObjectRankData[index].rank[i])
+                }
+            }
+            
+            self.CSongNameChartLabelArray = [self.Line1SongNameLabel, self.Line2SongNameLabel, self.Line3SongNameLabel,self.Line4SongNameLabel]
+            
+            
+            for (index, element) in self.CSongRankChartSongName.enumerated()
+            {
+                self.CSongNameChartLabelArray[index].text = "• " + self.CSongRankChartSongName[index]
+            }
+            self.SetUpLineKChart(name: self.yarisTime, basic: self.basicData, values1: self.RankLineData[0], values2: self.RankLineData[1], values3: self.RankLineData[2], values4: self.RankLineData[3], values5: self.RankLineData[4], values6: self.RankLineData[5], values7: self.RankLineData[6], values8: self.RankLineData[7], values9: self.RankLineData[8], values10: self.RankLineData[9])
+        }
+    }
+    
+    
+    func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
+    {
         //設置整個Chart的面板
         //LineKChartView.frame = CGRect(x:0, y:20, width: self.view.bounds.width-5, height: 250) // 設置整個曲線圖位置與大小
         LineCChartView.leftAxis.axisMinimum = 0
@@ -113,7 +339,7 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         }
         let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "Whee In - Good Bye")
         Rank2LineDataSet.lineWidth = 3
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
+        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
         Rank2LineDataSet.circleRadius = 0
         Rank2LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank2LineDataSet.drawValuesEnabled = false;
@@ -131,7 +357,7 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "HWASA - TWIT")
         
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
         //linedataset.circleHoleRadius = 1
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
@@ -142,16 +368,6 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         var axisFormatDelgate: IAxisValueFormatter?
         LineCChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineCChartView.xAxis.granularity = 1
-    }
-    
-    private func UpdateRankSongs()
-    {
-        CSongRankArray.removeAll()
-        CSongRankArray.append(SongRank(Rank:"Rank1", Grade:30, Cover:"Yellow Flower", SongName:"Rude Boy", Singer:"MAMAMOO", Category: .Korean))
-        CSongRankArray.append(SongRank(Rank: "Rank2", Grade: 20, Cover: "Yellow Flower", SongName: "Starry Night", Singer: "MAMAMOO", Category: .Korean))
-        CSongRankArray.append(SongRank(Rank: "Rank3", Grade: 10, Cover: "Yellow Flower", SongName: "Spring Fever", Singer: "MAMAMOO", Category: .Korean))
-        CSongRankArray.append(SongRank(Rank: "Rank4", Grade: 5, Cover: "Yellow Flower", SongName: "Be Clam", Singer: "MAMAMOO", Category: .Korean))
-        CSongRankArray.append(SongRank(Rank: "Rank5", Grade: 2, Cover: "Yellow Flower", SongName: "Paint me", Singer: "MAMAMOO", Category: .Korean))
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -165,8 +381,11 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = CChartTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! CSongsRankTableViewCell
         
-        cell.RankCell.image = UIImage(named: CSongRankArray[indexPath.row].Rank)
-        cell.CoverCell.image = UIImage(named: CSongRankArray[indexPath.row].Cover)
+        cell.RankCell.image = UIImage(named: "Rank" +  CSongRankArray[indexPath.row].Rank)
+        
+        let coverPath = CSongRankArray[indexPath.row].Cover.path
+        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
+        //cell.CoverCell.image = UIImage(named: CSongRankArray[indexPath.row].Cover.path)
         cell.SongNameCell.text = CSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = CSongRankArray[indexPath.row].Singer
         
@@ -180,58 +399,317 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath.row + 1)
     }
-    
-    
 }
 
 class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
-    //@IBOutlet weak var LineKChartView: LineChartView!
+    
+    @IBOutlet weak var Line1SongNameLabel: UILabel!
+    @IBOutlet weak var Line2SongNameLabel: UILabel!
+    @IBOutlet weak var Line3SongNameLabel: UILabel!
+    @IBOutlet weak var Line4SongNameLabel: UILabel!
+    @IBOutlet weak var Line5SongNameLabel: UILabel!
+    @IBOutlet weak var Line6SongNameLabel: UILabel!
     
     @IBOutlet weak var LineKChartView: LineChartView!
     @IBOutlet weak var KChartTableView: UITableView!
     
     var KSongRankArray = [SongRank]()
     
-    let yarisTime:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+    var KSongNameChartLabelArray:Array<UILabel> = Array()
+    var KSongRankChartSongName:Array<String> = Array()
     
-    
+    var yarisTime:Array<String> = Array()
     let data = LineChartData()
     
     var basicData:Array<Double> = []
-    var Rank1LineData:Array<Double> = [] // Line Chart 中的 數據點
-    var Rank2LineData:Array<Double> = []
-    var Rank3LineData:Array<Double> = []
+    var RankLineData = [[Double]](repeating: [Double](repeating: 0, count: 24), count: 10) // Line Chart 中的 數據點
     
     var Rank1LineDataSet = LineChartDataSet()
     var Rank2LineDataSet = LineChartDataSet()
     var Rank3LineDataSet = LineChartDataSet()
+    var Rank4LineDataSet = LineChartDataSet()
+    var Rank5LineDataSet = LineChartDataSet()
+    var Rank6LineDataSet = LineChartDataSet()
+    var Rank7LineDataSet = LineChartDataSet()
+    var Rank8LineDataSet = LineChartDataSet()
+    var Rank9LineDataSet = LineChartDataSet()
+    var Rank10LineDataSet = LineChartDataSet()
+    
     
     var basicArray:[ChartDataEntry] = []
     var Rank1LineArray:[ChartDataEntry] = []
     var Rank2LineArray:[ChartDataEntry] = []
     var Rank3LineArray:[ChartDataEntry] = []
+    var Rank4LineArray:[ChartDataEntry] = []
+    var Rank5LineArray:[ChartDataEntry] = []
+    var Rank6LineArray:[ChartDataEntry] = []
+    var Rank7LineArray:[ChartDataEntry] = []
+    var Rank8LineArray:[ChartDataEntry] = []
+    var Rank9LineArray:[ChartDataEntry] = []
+    var Rank10LineArray:[ChartDataEntry] = []
     
+    var RankData:[Top3type] = []
     
+    func GetTop50()
+    {
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/krank") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    let SongData = try JSONDecoder().decode([SongInfomation].self, from:data)
+                    
+                    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    
+                    for (index, element) in SongData.enumerated()
+                    {
+                        let singer = SongData[index].song_artist ?? ""
+                        let album = SongData[index].song_album ?? ""
+                        
+                        let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
+                        self.KSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        
+                        
+                        //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
+                    }
+                    
+                    DispatchQueue.main.async(){
+                        self.KChartTableView.reloadData()
+                    }
+                }
+                catch
+                {
+                    print(error)
+                }
+            }
+        }.resume()
+    }
+    
+    var albumPath = String()
+    
+    func downloadSongCover(url: URL, singer:String, album:String){
+        let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        print(mainPath)
+        let singerPath = mainPath + "/" + singer
+        
+        let singerIsExit = FileManager.default.fileExists(atPath: singerPath)
+        
+        if singerIsExit == false
+        {
+            do{
+                try FileManager.default.createDirectory(atPath: singerPath, withIntermediateDirectories: true, attributes: nil)
+            }catch
+            {
+                print("error")
+            }
+        }
+        
+        albumPath = singerPath + "/" + album
+        let albumIsExit = FileManager.default.fileExists(atPath: albumPath)
+        if albumIsExit == false
+        {
+            do{
+                try FileManager.default.createDirectory(atPath: albumPath, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch
+            {
+                print("error")
+            }
+        }
+        
+        let downloadRequest = URLRequest(url: url)
+        URLSession.shared.downloadTask(with: downloadRequest) { location, response, error in
+            guard  let tempLocation = location, error == nil else { return }
+            let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let targetDirectory = documentDirectory.appendingPathComponent(singer+"/"+album)
+            do {
+                let fullURL = try targetDirectory.appendingPathComponent((response?.suggestedFilename!)!)
+                let coverIsExit = FileManager.default.fileExists(atPath: self.albumPath+"/cover.jpg")
+                if coverIsExit == false
+                {
+                    print(fullURL)
+                    try FileManager.default.moveItem(at: tempLocation, to: fullURL)
+                    print("saved at \(fullURL) \n")
+                }
+                
+            }catch CocoaError.fileReadNoSuchFileError {
+                print("No such file")
+            } catch {
+                // other errors
+                isDownload = 1
+                print("Error downloading file : \(error)")
+            }
+        }.resume()
+    }
+    
+    func run(after seconds: Int, completion: @escaping () -> Void)
+    {
+        let deadline = DispatchTime.now() + .seconds(seconds)
+        DispatchQueue.main.asyncAfter(deadline:deadline)
+        {
+            completion()
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        run(after: 1)
+        {
+            print("===========")
+            print(SongChooseTop3Array)
+            print("===========")
+            
+            for (index, element) in jsongObjectRankData.enumerated()
+            {
+            self.KSongRankChartSongName.append(jsongObjectRankData[index].song_name)
+                for(i, element) in jsongObjectRankData[index].rank.enumerated()
+                {
+                    self.RankLineData[index][i] = Double(jsongObjectRankData[index].rank[i])
+                }
+            }
+            
+            self.KSongNameChartLabelArray = [self.Line1SongNameLabel, self.Line2SongNameLabel, self.Line3SongNameLabel,self.Line4SongNameLabel, self.Line5SongNameLabel, self.Line6SongNameLabel]
+            
+            
+            for (index, element) in self.KSongRankChartSongName.enumerated()
+            {
+                self.KSongNameChartLabelArray[index].text = "▩ " + self.KSongRankChartSongName[index]
+            }
+            self.SetUpLineKChart(name: self.yarisTime, basic: self.basicData, values1: self.RankLineData[0], values2: self.RankLineData[1], values3: self.RankLineData[2], values4: self.RankLineData[3], values5: self.RankLineData[4], values6: self.RankLineData[5], values7: self.RankLineData[6], values8: self.RankLineData[7], values9: self.RankLineData[8], values10: self.RankLineData[9])
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        self.navigationController?.isNavigationBarHidden = false
+        //self.navigationController?.navigationBar.topItem?.title = "韓語排行榜"
+        self.navigationController?.navigationBar.tintColor = UIColor.orange
+        // 讓 navigationController 的背景變成透明
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        KChartTableView?.delegate = self
+        KChartTableView?.dataSource = self
+
+        let now:Date = Date()
+        let dateFormat:DateFormatter = DateFormatter()
+        dateFormat.dateFormat = "HH"
+        let dataString:String = dateFormat.string(from: now)
+        
+        for (index, element) in tmpYaris.enumerated()
+        {
+            var nowtime:Int = Int(dataString) ?? 0
+            var targetTime:Int = Int(tmpYaris[index]) ?? 0
+            var setTime = (nowtime + targetTime) % 24 + 1
+            if setTime == 24
+            {
+                setTime = 0
+            }
+            yarisTime.append(String(setTime))
+        }
+        
+        SongChooseTop3Array.removeAll()
+        jsongObjectRankData.removeAll()
+        
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/ktop") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    jsongObjectRankData = try JSONDecoder().decode([Top3type].self, from:data)
+                    print(jsongObjectRankData)
+                    
+                    for (index, element) in jsongObjectRankData.enumerated()
+                    {
+                        var GradeTotal = 0
+                        var RankNowInt = 0
+                        for (i, element) in jsongObjectRankData[index].rank.enumerated()
+                        {
+                            if i == 23
+                            {
+                                if jsongObjectRankData[index].rank[i] == 3
+                                {
+                                    RankNowInt = 1
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 2
+                                {
+                                    RankNowInt = 2
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 1
+                                {
+                                    RankNowInt = 3
+                                }
+                                else if jsongObjectRankData[index].rank[i] == -1
+                                {
+                                    RankNowInt = -1
+                                }
+                            }
+                            if jsongObjectRankData[index].rank[i] == -1
+                            {
+                                continue
+                            }
+                            GradeTotal = GradeTotal + jsongObjectRankData[index].rank[i]
+                        }
+                        print(jsongObjectRankData[index].song_name)
+                        print(GradeTotal)
+                        print("Rank", RankNowInt)
+                        
+                        SongChooseTop3Array.append(SongChooseTop3(LineId: index+1, SongName: jsongObjectRankData[index].song_name, Grade: GradeTotal, RankNow: RankNowInt))
+                    }
+                    
+                    
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
+        
+        GetTop50()
         
         LineKChartView.noDataText = "You need to provide data for the chart"
+        
         basicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        Rank1LineData = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 , 24, 20, 28, 22, 29, 23, 21, 27, 24, 20, 20, 25]
-        Rank2LineData = [2, 4, 5, 9, 10, 11, 12, 15, 12, 12, 12 , 11, 10, 10, 10, 13, 15, 16, 18, 18, 18, 20, 22, 25]
-        Rank3LineData = [1, 2, 3, 4 ,5, 6, 7, 8, 10, 11, 13, 15, 16, 15, 14, 14, 14, 14, 14, 14, 15, 15, 16, 17]
-        SetUpLineKChart(name: yarisTime, basic: basicData, values1: Rank1LineData, values2: Rank2LineData, values3:Rank3LineData)
-        //let count = Int(arc4random_uniform(20) + 3)
-        //setChartValues(count)
-        UpdateRankSongs()
+        RankLineData[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[1] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[2] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[3] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[4] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[5] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[6] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[7] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[8] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     }
     
-    func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double])
+    func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
     {
-        
-        
         //設置整個Chart的面板
         //LineKChartView.frame = CGRect(x:0, y:20, width: self.view.bounds.width-5, height: 250) // 設置整個曲線圖位置與大小
         LineKChartView.leftAxis.axisMinimum = 0
@@ -251,8 +729,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         //let data = LineChartData()
         
         // 每一條折線各自放置
-        
-        
         
         // 利用透明的性質，Set Up Chart上的24個分點
         for i in 0..<name.count{
@@ -274,7 +750,10 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             Rank1LineArray.append(data)
         }
         //第一條折線名稱
-        let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "HWASA - TWIT")
+        
+        let Rank1LineDataSet = LineChartDataSet(entries: Rank1LineArray, label: "Psycho")
+        
+        //let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "HWASA - TWIT")
         //linedataset.drawFilledEnabled = true;
         //linedataset.fillAlpha = 0.5;
         Rank1LineDataSet.lineWidth = 3 // 設置折線寬度
@@ -293,12 +772,14 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values2[i])
             Rank2LineArray.append(data)
         }
-        let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "Whee In - Good Bye")
+        //Rank2LineDataSet.label = "ttttttt"
+        let Rank2LineDataSet = LineChartDataSet.init(entries: Rank2LineArray, label: "METEOR")
         Rank2LineDataSet.lineWidth = 3
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
+        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
         Rank2LineDataSet.circleRadius = 0
-        Rank2LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank2LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank2LineDataSet.drawValuesEnabled = false;
+        Rank2LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank2LineDataSet)
         
         
@@ -310,93 +791,150 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             Rank3LineArray.append(data)
         }
         //第一條折線名稱
-        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "HWASA - TWIT")
+        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "다시는 사랑하지 않고, 이별에 아파하기 싫어")
         
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
         //linedataset.circleHoleRadius = 1
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
-        Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank3LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank3LineDataSet)
+        
+        // 第4名 螢色
+        for i in 0..<name.count{
+            let y = values4[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
+            Rank4LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
+        
+        Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
+        Rank4LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank4LineDataSet)
+        
+        // 第5名 藍綠色
+        for i in 0..<name.count{
+            let y = values5[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
+            Rank5LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
+        
+        Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank5LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank5LineDataSet)
+        
+        // 第6名 粉色
+        for i in 0..<name.count{
+            let y = values6[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
+            Rank6LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
+        
+        Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank6LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank6LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank6LineDataSet)
+        
+        // 第7名 粉色
+        for i in 0..<name.count{
+            let y = values7[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values7[i])
+            Rank7LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank7LineDataSet = LineChartDataSet(entries:Rank7LineArray, label: "HWASA - TWIT")
+        
+        Rank7LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank7LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank7LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank7LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank7LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank7LineDataSet)
+        
+        // 第8名 粉色
+        for i in 0..<name.count{
+            let y = values8[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values8[i])
+            Rank8LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank8LineDataSet = LineChartDataSet(entries:Rank8LineArray, label: "HWASA - TWIT")
+        
+        Rank8LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank8LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank8LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank8LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank8LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank8LineDataSet)
+        
+        // 第9名 粉色
+        for i in 0..<name.count{
+            let y = values9[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values9[i])
+            Rank9LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank9LineDataSet = LineChartDataSet(entries:Rank9LineArray, label: "HWASA - TWIT")
+        
+        Rank9LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank9LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank9LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank9LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank9LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank9LineDataSet)
+        
+        // 第10名 粉色
+        for i in 0..<name.count{
+            let y = values10[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values10[i])
+            Rank10LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank10LineDataSet = LineChartDataSet(entries:Rank10LineArray, label: "HWASA - TWIT")
+        
+        Rank10LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank10LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank10LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank10LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank10LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank10LineDataSet)
         
         self.LineKChartView.data = data
         var axisFormatDelgate: IAxisValueFormatter?
         LineKChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineKChartView.xAxis.granularity = 1
-    }
-    
-    @IBAction func ShowRank1Line(_ sender: UIButton) {
-        print("clickYes    1")
-        //data.removeDataSet(Rank1LineDataSet)
-        //data.removeDataSet(Rank2LineDataSet)
-        //data.removeDataSet(Rank3LineDataSet)
-        //LineKChartView.data = data
-        
-        /*for i in 0..<yarisTime.count{
-         let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:Rank1LineData[i])
-         Rank3LineArray.append(data)
-         }*/
-        
-        data.removeEntry(ChartDataEntry(x: Double(0), y: Rank1LineData[0]), dataSetIndex: 0)
-        data.removeDataSet(Rank1LineDataSet)
         
         
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)]
-        LineKChartView.data = data
-        
-        print("Remove Line 1")
-        //data.addDataSet(Rank1LineDataSet)
-        //data.addDataSet(Rank2LineDataSet)
-        //data.addDataSet(Rank3LineDataSet)
-    }
-    
-    
-    
-    @IBAction func ShowRank2Line(_ sender: UIButton) {
-        data.removeDataSet(Rank1LineDataSet)
-        data.removeDataSet(Rank2LineDataSet)
-        data.removeDataSet(Rank3LineDataSet)
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 0.4)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)]
-        print("Remove Line 22")
-        data.addDataSet(Rank1LineDataSet)
-        data.addDataSet(Rank2LineDataSet)
-        data.addDataSet(Rank3LineDataSet)
-    }
-    
-    
-    @IBAction func ShowRank3Line(_ sender: UIButton) {
-        data.removeDataSet(Rank1LineDataSet)
-        data.removeDataSet(Rank2LineDataSet)
-        data.removeDataSet(Rank3LineDataSet)
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 0.4)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)]
-        data.addDataSet(Rank1LineDataSet)
-        data.addDataSet(Rank2LineDataSet)
-        data.addDataSet(Rank3LineDataSet)
-    }
-    
+        LineKChartView.notifyDataSetChanged()
 
-    private func UpdateRankSongs()
-    {
-        KSongRankArray.removeAll()
-        KSongRankArray.append(SongRank(Rank:"Rank1", Grade:30, Cover:"Red Moon", SongName:"Sleep in the car", Singer:"MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank2", Grade: 20, Cover: "Red Moon", SongName: "Summer Night's Dream", Singer: "MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank3", Grade: 10, Cover: "Red Moon", SongName: "Egotistic", Singer: "MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank4", Grade: 5, Cover: "Red Moon", SongName: "Selfish", Singer: "MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank5", Grade: 2, Cover: "Red Moon", SongName: "Rainy Season", Singer: "MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank:"Rank6", Grade:30, Cover:"Red Moon", SongName:"Sleep in the car", Singer:"MAMAMOO", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank7", Grade: 0, Cover: "", SongName: "", Singer: "", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank8", Grade: 0, Cover: "", SongName: "", Singer: "", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank9", Grade: 0, Cover: "", SongName: "", Singer: "", Category: .Korean))
-        KSongRankArray.append(SongRank(Rank: "Rank10", Grade: 0, Cover: "", SongName: "", Singer: "", Category: .Korean))
-        
-        print(KSongRankArray[0].Grade)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -410,10 +948,12 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = KChartTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! KSongsRankTableViewCell
         
-        cell.RankCell.image = UIImage(named: KSongRankArray[indexPath.row].Rank)
-        cell.CoverCell.image = UIImage(named: KSongRankArray[indexPath.row].Cover)
+        cell.RankCell.image = UIImage(named: "Rank" + KSongRankArray[indexPath.row].Rank)
+        
+        let coverPath = KSongRankArray[indexPath.row].Cover.path
+        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
         cell.SongNameCell.text = KSongRankArray[indexPath.row].SongName
-        cell .SingerCell.text = KSongRankArray[indexPath.row].Singer
+        cell.SingerCell.text = KSongRankArray[indexPath.row].Singer
         
         return cell
     }
@@ -426,49 +966,254 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
 
 
 class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
-    //@IBOutlet weak var LineKChartView: LineChartView!
+    @IBOutlet weak var Line1SongNameLabel: UILabel!
+    @IBOutlet weak var Line2SongNameLabel: UILabel!
+    @IBOutlet weak var Line3SongNameLabel: UILabel!
+    @IBOutlet weak var Line4SongNameLabel: UILabel!
+    @IBOutlet weak var Line5SongNameLabel: UILabel!
+    @IBOutlet weak var Line6SongNameLabel: UILabel!
     
+    
+    var WSongNameChartLabelArray:Array<UILabel> = Array()
+    var WSongRankChartSongName:Array<String> = Array()
+
     @IBOutlet weak var LineWChartView: LineChartView!
     @IBOutlet weak var WChartTableView: UITableView!
     
-    let yarisTime:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+    var yarisTime:Array<String> = Array()
     
     var WSongRankArray = [SongRank]()
     
     let data = LineChartData()
     
     var basicData:Array<Double> = []
-    var Rank1LineData:Array<Double> = [] // Line Chart 中的 數據點
-    var Rank2LineData:Array<Double> = []
-    var Rank3LineData:Array<Double> = []
+    var RankLineData = [[Double]](repeating: [Double](repeating: 0, count: 24), count: 10)
     
     var Rank1LineDataSet = LineChartDataSet()
     var Rank2LineDataSet = LineChartDataSet()
     var Rank3LineDataSet = LineChartDataSet()
+    var Rank4LineDataSet = LineChartDataSet()
+    var Rank5LineDataSet = LineChartDataSet()
+    var Rank6LineDataSet = LineChartDataSet()
+    var Rank7LineDataSet = LineChartDataSet()
+    var Rank8LineDataSet = LineChartDataSet()
+    var Rank9LineDataSet = LineChartDataSet()
+    var Rank10LineDataSet = LineChartDataSet()
+    
     
     var basicArray:[ChartDataEntry] = []
     var Rank1LineArray:[ChartDataEntry] = []
     var Rank2LineArray:[ChartDataEntry] = []
     var Rank3LineArray:[ChartDataEntry] = []
+    var Rank4LineArray:[ChartDataEntry] = []
+    var Rank5LineArray:[ChartDataEntry] = []
+    var Rank6LineArray:[ChartDataEntry] = []
+    var Rank7LineArray:[ChartDataEntry] = []
+    var Rank8LineArray:[ChartDataEntry] = []
+    var Rank9LineArray:[ChartDataEntry] = []
+    var Rank10LineArray:[ChartDataEntry] = []
     
+    var RankData:[Top3type] = []
+
     
+    func GetTop50()
+    {
+        WSongRankArray.removeAll()
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/wrank") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    let SongData = try JSONDecoder().decode([SongInfomation].self, from:data)
+                    print(SongData)
+                    
+                    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    
+                    for (index, element) in SongData.enumerated()
+                    {
+                        let singer = SongData[index].song_artist ?? ""
+                        let album = SongData[index].song_album ?? ""
+                        
+                        let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
+                        self.WSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        
+                        
+                        //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
+                    }
+                    
+                    DispatchQueue.main.async(){
+                        //print(self.KSongRankArray.count)
+                        self.WChartTableView.reloadData()
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
+    }
+    
+    func run(after seconds: Int, completion: @escaping () -> Void)
+    {
+        let deadline = DispatchTime.now() + .seconds(seconds)
+        DispatchQueue.main.asyncAfter(deadline:deadline)
+        {
+            completion()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        run(after: 1)
+        {
+            
+            for (index, element) in jsongObjectRankData.enumerated()
+            {
+                self.WSongRankChartSongName.append(jsongObjectRankData[index].song_name)
+                for(i, element) in jsongObjectRankData[index].rank.enumerated()
+                {
+                    self.RankLineData[index][i] = Double(jsongObjectRankData[index].rank[i])
+                }
+            }
+            
+            self.WSongNameChartLabelArray = [self.Line1SongNameLabel, self.Line2SongNameLabel, self.Line3SongNameLabel,self.Line4SongNameLabel, self.Line5SongNameLabel, self.Line6SongNameLabel]
+            
+            
+            for (index, element) in self.WSongRankChartSongName.enumerated()
+            {
+                self.WSongNameChartLabelArray[index].text = "• " + self.WSongRankChartSongName[index]
+            }
+            
+            self.SetUpLineKChart(name: self.yarisTime, basic: self.basicData, values1: self.RankLineData[0], values2: self.RankLineData[1], values3: self.RankLineData[2], values4: self.RankLineData[3], values5: self.RankLineData[4], values6: self.RankLineData[5], values7: self.RankLineData[6], values8: self.RankLineData[7], values9: self.RankLineData[8], values10: self.RankLineData[9])
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        // 設置導覽列
+        self.navigationController?.isNavigationBarHidden = false
+        //self.navigationController?.navigationBar.topItem?.title = "西洋排行榜"
+        self.navigationController?.navigationBar.tintColor = UIColor.orange
+        // 讓 navigationController 的背景變成透明
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+        let now:Date = Date()
+        let dateFormat:DateFormatter = DateFormatter()
+        dateFormat.dateFormat = "HH"
+        let dataString:String = dateFormat.string(from: now)
+        
+        for (index, element) in tmpYaris.enumerated()
+        {
+            var nowtime:Int = Int(dataString) ?? 0
+            var targetTime:Int = Int(tmpYaris[index]) ?? 0
+            var setTime = (nowtime + targetTime) % 24 + 1
+            if setTime == 24
+            {
+                setTime = 0
+            }
+            yarisTime.append(String(setTime))
+        }
+        SongChooseTop3Array.removeAll()
+        jsongObjectRankData.removeAll()
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/rank/wtop") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    print(json)
+                    jsongObjectRankData = try JSONDecoder().decode([Top3type].self, from:data)
+                    print(jsongObjectRankData)
+                    
+                    for (index, element) in jsongObjectRankData.enumerated()
+                    {
+                        var GradeTotal = 0
+                        var RankNowInt = 0
+                        for (i, element) in jsongObjectRankData[index].rank.enumerated()
+                        {
+                            if i == 23
+                            {
+                                if jsongObjectRankData[index].rank[i] == 3
+                                {
+                                    RankNowInt = 1
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 2
+                                {
+                                    RankNowInt = 2
+                                }
+                                else if jsongObjectRankData[index].rank[i] == 1
+                                {
+                                    RankNowInt = 3
+                                }
+                                else if jsongObjectRankData[index].rank[i] == -1
+                                {
+                                    RankNowInt = -1
+                                }
+                            }
+                            if jsongObjectRankData[index].rank[i] == -1
+                            {
+                                continue
+                            }
+                            GradeTotal = GradeTotal + jsongObjectRankData[index].rank[i]
+                        }
+                        print(jsongObjectRankData[index].song_name)
+                        print(GradeTotal)
+                        print("Rank", RankNowInt)
+                        
+                        SongChooseTop3Array.append(SongChooseTop3(LineId: index+1, SongName: jsongObjectRankData[index].song_name, Grade: GradeTotal, RankNow: RankNowInt))
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
         
         LineWChartView.noDataText = "You need to provide data for the chart"
+        
         basicData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        Rank1LineData = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 , 24, 20, 28, 22, 29, 23, 21, 27, 24, 20, 20, 25]
-        Rank2LineData = [2, 4, 5, 9, 10, 11, 12, 15, 12, 12, 12 , 11, 10, 10, 10, 13, 15, 16, 18, 18, 18, 20, 22, 25]
-        Rank3LineData = [1, 2, 3, 4 ,5, 6, 7, 8, 10, 11, 13, 15, 16, 15, 14, 14, 14, 14, 14, 14, 15, 15, 16, 17]
-        SetUpLineKChart(name: yarisTime, basic: basicData, values1: Rank1LineData, values2: Rank2LineData, values3:Rank3LineData)
-        //let count = Int(arc4random_uniform(20) + 3)
-        //setChartValues(count)
-        UpdateRankSongs()
+        RankLineData[0] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[1] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[2] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[3] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[4] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[5] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[6] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[7] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[8] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        RankLineData[9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        
+        GetTop50()
     }
     
-    func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double])
+    func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
     {
         
         
@@ -491,9 +1236,6 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         //let data = LineChartData()
         
         // 每一條折線各自放置
-        
-        
-        
         // 利用透明的性質，Set Up Chart上的24個分點
         for i in 0..<name.count{
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:basic[i])
@@ -535,7 +1277,7 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         }
         let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "Whee In - Good Bye")
         Rank2LineDataSet.lineWidth = 3
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
+        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
         Rank2LineDataSet.circleRadius = 0
         Rank2LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank2LineDataSet.drawValuesEnabled = false;
@@ -553,94 +1295,71 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "HWASA - TWIT")
         
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
+        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
         //linedataset.circleHoleRadius = 1
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank3LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank3LineDataSet)
         
+        // 第四名 螢黃
+        for i in 0..<name.count{
+            let y = values4[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
+            Rank4LineArray.append(data)
+        }
+        
+        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
+        
+        Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
+        Rank4LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank4LineDataSet)
+        
+        // 第5名 藍綠色
+        for i in 0..<name.count{
+            let y = values5[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
+            Rank5LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
+        
+        Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank5LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank5LineDataSet)
+        
+        // 第6名 粉色
+        for i in 0..<name.count{
+            let y = values6[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
+            Rank6LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
+        
+        Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank6LineDataSet.colors = [UIColor(red:255/255, green: 178/255, blue:147/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank6LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank6LineDataSet)
+        
         self.LineWChartView.data = data
         var axisFormatDelgate: IAxisValueFormatter?
         LineWChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineWChartView.xAxis.granularity = 1
-    }
-    
-    
-    /*func ShowRank2Line()
-     {
-     Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 0.4)]
-     Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
-     Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)]
-     }*/
-    
-    
-    
-    
-    
-    @IBAction func ShowRank1Line(_ sender: UIButton) {
-        print("clickYes    1")
-        //data.removeDataSet(Rank1LineDataSet)
-        //data.removeDataSet(Rank2LineDataSet)
-        //data.removeDataSet(Rank3LineDataSet)
-        //LineKChartView.data = data
-        
-        /*for i in 0..<yarisTime.count{
-         let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:Rank1LineData[i])
-         Rank3LineArray.append(data)
-         }*/
-        
-        data.removeEntry(ChartDataEntry(x: Double(0), y: Rank1LineData[0]), dataSetIndex: 0)
-        data.removeDataSet(Rank1LineDataSet)
-        
-        
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)]
-        LineWChartView.data = data
-        
-        print("Remove Line 1")
-        //data.addDataSet(Rank1LineDataSet)
-        //data.addDataSet(Rank2LineDataSet)
-        //data.addDataSet(Rank3LineDataSet)
-    }
-    
-    
-    
-    @IBAction func ShowRank2Line(_ sender: UIButton) {
-        data.removeDataSet(Rank1LineDataSet)
-        data.removeDataSet(Rank2LineDataSet)
-        data.removeDataSet(Rank3LineDataSet)
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 0.4)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)]
-        print("Remove Line 22")
-        data.addDataSet(Rank1LineDataSet)
-        data.addDataSet(Rank2LineDataSet)
-        data.addDataSet(Rank3LineDataSet)
-    }
-    
-    
-    @IBAction func ShowRank3Line(_ sender: UIButton) {
-        data.removeDataSet(Rank1LineDataSet)
-        data.removeDataSet(Rank2LineDataSet)
-        data.removeDataSet(Rank3LineDataSet)
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 0.4)]
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 0.4)]
-        Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)]
-        data.addDataSet(Rank1LineDataSet)
-        data.addDataSet(Rank2LineDataSet)
-        data.addDataSet(Rank3LineDataSet)
-    }
-    
-    private func UpdateRankSongs()
-    {
-        WSongRankArray.removeAll()
-        WSongRankArray.append(SongRank(Rank:"Rank1", Grade:30, Cover:"Purple", SongName:"Yes I am", Singer:"MAMAMOO", Category: .Korean))
-        WSongRankArray.append(SongRank(Rank: "Rank2", Grade: 20, Cover: "Purple", SongName: "Finally", Singer: "MAMAMOO", Category: .Korean))
-        WSongRankArray.append(SongRank(Rank: "Rank3", Grade: 10, Cover: "Purple", SongName: "Love & Hate", Singer: "MAMAMOO", Category: .Korean))
-        WSongRankArray.append(SongRank(Rank: "Rank4", Grade: 5, Cover: "Purple", SongName: "DA DA DA", Singer: "MAMAMOO", Category: .Korean))
-        WSongRankArray.append(SongRank(Rank: "Rank5", Grade: 2, Cover: "Purple", SongName: "AGE GAG", Singer: "MAMAMOO", Category: .Korean))
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -654,8 +1373,10 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = WChartTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! WSongsRankTableViewCell
         
-        cell.RankCell.image = UIImage(named: WSongRankArray[indexPath.row].Rank)
-        cell.CoverCell.image = UIImage(named: WSongRankArray[indexPath.row].Cover)
+        cell.RankCell.image = UIImage(named: "Rank" + WSongRankArray[indexPath.row].Rank)
+        let coverPath = WSongRankArray[indexPath.row].Cover.path
+        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
+        //cell.CoverCell.image = UIImage(named: WSongRankArray[indexPath.row].Cover.path)
         cell.SongNameCell.text = WSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = WSongRankArray[indexPath.row].Singer
         
@@ -665,26 +1386,36 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
-    
-    
 }
 
 
 class SongRank{
     let Rank: String
-    let Grade: Int
-    let Cover: String
+    let Cover: URL
     let SongName: String
     let Singer: String
     let Category: SongType
     
-    init(Rank:String, Grade: Int, Cover: String, SongName: String, Singer: String, Category:SongType)
+    init(Rank:String, Cover: URL, SongName: String, Singer: String, Category:SongType)
     {
         self.Rank = Rank
-        self.Grade = Grade
         self.Cover = Cover
         self.SongName = SongName
         self.Singer = Singer
         self.Category = Category
+    }
+}
+
+class SongChooseTop3{
+    let LineId : Int
+    let SongName: String
+    let Grade: Int
+    let RankNow: Int
+    init(LineId: Int, SongName: String, Grade: Int, RankNow: Int)
+    {
+        self.LineId = LineId
+        self.SongName = SongName
+        self.Grade = Grade
+        self.RankNow = RankNow
     }
 }

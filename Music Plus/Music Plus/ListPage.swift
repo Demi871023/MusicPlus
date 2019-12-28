@@ -29,8 +29,6 @@ var selectSongNumber: Int = 0
 var MyListSongId:Array<Int> = Array()
 
 
-
-
 protocol FetchSelectRow {
     func fetchInt(rowNumber:Int)
 }
@@ -141,23 +139,22 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
     @objc func RefreshList()
     {
         let tmp = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        
-        /*for (index, element) in LikeListArray.enumerated(){
-            SongSearchArray.append(SONG(Cover: LikeListArray[index].Cover, Album: LikeListArray[index].Album, SongName: LikeListArray[index].SongName, Singer: LikeListArray[index].Singer, Category: .Korean, SongPath: tmp, SongLength: 0))
-        }*/
         SongHaveNumber = SongArray.count
         refresher.endRefreshing()
         MusicListTableView.reloadData()
     }
     
-    
-    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showPlayer" {
-            let playerVC = segue.destination as! FifthPageViewController
-            let indexPath = MusicListTableView.indexPathsForSelectedRows
-        }
+    @IBAction func didUnwindFromNowListeningPage(_ sender: UIStoryboardSegue)
+    {
+        guard let NowListeningSongIndex = sender.source as? FifthPageViewController else{ return }
+        selectSongNumber = NowListeningSongIndex.songindex
+        print(selectSongNumber)
         
-    }*/
+        NowPlayingSongNameText.text = SongSearchArray[selectSongNumber].SongName
+        NowPlayingSingerText.text = SongSearchArray[selectSongNumber].Singer
+        NowPlayingCoverImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
+        
+    }
     
     // Get User List Songs By UserId, response is
     // "personal_list" = [] string array
@@ -280,7 +277,7 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
     private func SetUpSongs()
     {
         //let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        
+        SongArray.removeAll()
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         //let coverPath = documentDirectory.appendingPathComponent()
         for (index, element) in jsonObjectArray.enumerated() {
@@ -815,7 +812,8 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
     var delegate: SelectedCollectionItemDelegate?
     var PostTopicId:Int = 0
     var PostTopicName:String = ""
-    
+    var PostGenreId:Int = 0
+    var PostGenreName:String = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -875,11 +873,120 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
             self.performSegue(withIdentifier: "IntoThemeListSegue", sender: self)
         }
     }
+    
+    
+    @IBAction func PostGenreIdOne(_ sender: Any)
+    {
+        PostGenreId = 1
+        PostGenreName = "Blue"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdTwo(_ sender: Any) {
+        PostGenreId = 2
+        PostGenreName = "Rap / Hip-hop"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdThree(_ sender: Any) {
+        PostGenreId = 3
+        PostGenreName = "Ballad"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdFour(_ sender: Any) {
+        PostGenreId = 4
+        PostGenreName = "Dance"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdFive(_ sender: Any) {
+        PostGenreId = 5
+        PostGenreName = "Pop"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdSix(_ sender: Any) {
+        PostGenreId = 6
+        PostGenreName = "Eletronic"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    @IBAction func PostGenreIdSeven(_ sender: Any) {
+        PostGenreId = 7
+        PostGenreName = "Country"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdEight(_ sender: Any) {
+        PostGenreId = 8
+        PostGenreName = "Indie"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdNine(_ sender: Any) {
+        PostGenreId = 9
+        PostGenreName = "R&B"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
+    
+    @IBAction func PostGenreIdTen(_ sender: Any) {
+        PostGenreId = 10
+        PostGenreName = "Rock"
+        DispatchQueue.main.async(){
+            self.performSegue(withIdentifier: "IntoGenreListSegue", sender: self)
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let vc = segue.destination as! TopicListViewController
-        vc.TopicId = PostTopicId
-        vc.TopicName = PostTopicName
-        //let vc = segue.destination as! FifthPageViewController
+        if segue.identifier == "IntoThemeListSegue"
+        {
+            let vc = segue.destination as! TopicListViewController
+            vc.TopicId = PostTopicId
+            vc.TopicName = PostTopicName
+            //let vc = segue.destination as! FifthPageViewController
+        }
+        if segue.identifier == "IntoGenreListSegue"
+        {
+            let vc = segue.destination as! GenreListSongViewController
+            vc.GenreId = PostGenreId
+            vc.GenreName = PostGenreName
+            print("This is Genre Page")
+        }
+    }
+    
+    @IBAction func didUnwindFromTopicPage(_ sender: UIStoryboardSegue)
+    {
+        guard let NowListeningSongIndex = sender.source as? TopicListViewController else{ return }
+        //let  = NowListeningSongIndex.songindex
+        //print(selectSongNumber)
+        
     }
     
     

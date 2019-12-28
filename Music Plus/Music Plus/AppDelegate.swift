@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            // 使用指定的選項啟動或停用 APP 的 Audio Session。
+            try audioSession.setActive(true)
+            // 設置 audioSession 類別為 AVAudioSessionCategoryPlayback
+            try audioSession.setCategory(AVAudioSession.Category.playback)
+        }
+        catch {
+            print(error)
+        }
         return true
+    //}
+        //return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

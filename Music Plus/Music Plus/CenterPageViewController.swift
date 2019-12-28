@@ -31,18 +31,21 @@ class CenterPageViewController: UIPageViewController,FetchSelectRow {
     
     lazy var subViewControllers:[UIViewController] = {
         return [
-            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePage") as! HomePage,
             UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ListPage") as! ListPage,
-            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "FifthPageViewController") as! FifthPageViewController
+            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePage") as! HomePage,
+            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecord") as! HomePVCRecord
         ]
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.navigationController?.isNavigationBarHidden = true
+
         dataSource = self
         delegate = self
-        setViewControllerFromIndex(index: 0)
+        setViewControllerFromIndex(index: 1)
+        
+        
     }
     
     func setViewControllerFromIndex(index:Int)
@@ -82,8 +85,7 @@ class HomePVC: UIPageViewController {
     lazy var HomesubViewControllers:[UIViewController] = {
         return [
             UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRank") as! HomePVCRank,
-            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecommend") as! HomePVCRecommend,
-            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecord") as! HomePVCRecord
+            UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "HomePVCRecommend") as! HomePVCRecommend
         ]
     }()
     
