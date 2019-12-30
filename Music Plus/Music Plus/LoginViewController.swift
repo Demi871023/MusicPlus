@@ -70,7 +70,7 @@ struct MyRecommend: Decodable{
 }
 
 struct GenreList: Decodable{
-    let SondList: [String]
+    let SondList: [Int]
     enum CodingKeys: String, CodingKey {
         case SondList
     }

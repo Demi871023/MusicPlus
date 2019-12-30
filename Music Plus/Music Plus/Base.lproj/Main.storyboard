@@ -1380,7 +1380,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="GenreName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vbx-Ka-uQM">
-                                <rect key="frame" x="16" y="67" width="139" height="30"/>
+                                <rect key="frame" x="16" y="67" width="286" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                 <color key="textColor" red="1" green="0.66786530180000003" blue="0.2451780928" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -1391,33 +1391,33 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="58" id="8wh-9v-wr8" customClass="TopicListSongTableViewCell" customModule="Music_Plus" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="363" height="58"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="74" id="8wh-9v-wr8" customClass="TopicListSongTableViewCell" customModule="Music_Plus" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="363" height="74"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8wh-9v-wr8" id="UYf-8b-p3D">
-                                            <rect key="frame" x="0.0" y="0.0" width="363" height="58"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="363" height="74"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gQk-KU-DbY">
-                                                    <rect key="frame" x="20" y="0.0" width="50" height="50"/>
+                                                    <rect key="frame" x="20" y="12" width="50" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SongName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qet-7J-lgx">
-                                                    <rect key="frame" x="78" y="11" width="214" height="18"/>
+                                                    <rect key="frame" x="78" y="16" width="214" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Singer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yKb-Le-xzR">
-                                                    <rect key="frame" x="78" y="30" width="229" height="15"/>
+                                                    <rect key="frame" x="78" y="38" width="229" height="15"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vch-mF-ehz">
-                                                    <rect key="frame" x="315" y="11" width="28" height="29"/>
+                                                    <rect key="frame" x="315" y="23" width="28" height="29"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="Button" image="LikeSongIcon.png"/>
                                                 </button>
@@ -1441,6 +1441,10 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="8tj-vR-zOQ">
+                                <rect key="frame" x="171" y="112" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="wuk-S9-COr"/>
@@ -1449,6 +1453,7 @@
                         <outlet property="AddSuccessNotificationLabel" destination="3SJ-4j-Jlf" id="Viu-Zc-G2L"/>
                         <outlet property="GenreListSongTableView" destination="p57-RG-z4k" id="cmz-5u-U0I"/>
                         <outlet property="GenreNameLabel" destination="Vbx-Ka-uQM" id="brX-m7-nS1"/>
+                        <outlet property="LoadingActivityIndicator" destination="8tj-vR-zOQ" id="q8V-Zw-OUl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gaL-CL-pyf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1520,10 +1525,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mRz-ir-lyq">
-                                <rect key="frame" x="50" y="115" width="272" height="174"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Nick Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DaH-0L-IQq">
                                 <rect key="frame" x="42" y="310" width="95" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1654,7 +1655,6 @@
                         <outlet property="EditUserProfileButton" destination="57O-ku-5bt" id="0Co-el-C07"/>
                         <outlet property="EmailTextField" destination="liT-3t-bim" id="zsJ-nv-e5B"/>
                         <outlet property="FrequencyLabel" destination="d2i-Hk-Dlo" id="K13-K4-ZG0"/>
-                        <outlet property="MyPhotoImage" destination="mRz-ir-lyq" id="fRF-hF-zO0"/>
                         <outlet property="NickNameTextField" destination="xNF-sd-WXg" id="brD-5j-Zew"/>
                         <outlet property="RemainingTimeLabel" destination="1zy-yy-Sfv" id="8Kc-mQ-mXS"/>
                         <outlet property="SongAmountLabel" destination="hUD-jK-Unq" id="qLL-u2-CTQ"/>
@@ -1769,6 +1769,10 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="A7t-gh-P0S">
+                                                <rect key="frame" x="168" y="120" width="20" height="20"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            </activityIndicatorView>
                                         </subviews>
                                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </view>
@@ -1780,6 +1784,7 @@
                     </view>
                     <connections>
                         <outlet property="AddSuccessNotificationLabel" destination="4Gd-d7-1Om" id="qSb-Za-qVB"/>
+                        <outlet property="LoadingActivityIndicator" destination="A7t-gh-P0S" id="hpw-bb-icw"/>
                         <outlet property="SongRecommendTableView" destination="Jgq-o1-djV" id="hA0-Zl-Y7V"/>
                         <outlet property="SongRecommendTitleLabel" destination="t72-EC-b14" id="2Qs-Dh-nsO"/>
                     </connections>
@@ -1859,14 +1864,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="請輸入您想搜尋的歌手或歌名" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Eky-gp-iMu">
-                                <rect key="frame" x="10" y="-29" width="292" height="30"/>
+                                <rect key="frame" x="10" y="-35" width="292" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="seK-dU-Ntq">
-                                <rect key="frame" x="310" y="-28" width="46" height="29"/>
+                                <rect key="frame" x="310" y="-35" width="46" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.66786530180000003" blue="0.2451780928" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <state key="normal" title="搜尋">
@@ -2056,7 +2061,7 @@
                                                 <rect key="frame" x="25" y="597" width="333" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
-                                                <state key="normal" title="Eletronic" image="EletronicThemIcon"/>
+                                                <state key="normal" title="Eletronic" image="ElectronicThemIcon"/>
                                                 <connections>
                                                     <action selector="PostGenreIdSix:" destination="PBn-oO-HPg" eventType="touchUpInside" id="MJF-bj-F5i"/>
                                                 </connections>
@@ -2110,7 +2115,7 @@
                                                 <rect key="frame" x="250" y="64" width="100" height="84"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" image="AutumnThemeIcon.png"/>
+                                                <state key="normal" image="SeasonThemeIcon.png"/>
                                                 <connections>
                                                     <action selector="PostTopicIdThree:" destination="PBn-oO-HPg" eventType="touchUpInside" id="HiM-53-9FH"/>
                                                 </connections>
@@ -2151,8 +2156,8 @@
                                                     <action selector="PostGenreIdFive:" destination="PBn-oO-HPg" eventType="touchUpInside" id="8ot-lB-Lra"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tgc-Yc-EVV">
-                                                <rect key="frame" x="25" y="653" width="333" height="44"/>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tgc-Yc-EVV">
+                                                <rect key="frame" x="27" y="812" width="333" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <state key="normal" title="Country" image="CountryThemIcon"/>
@@ -2161,7 +2166,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uyh-aZ-VYq">
-                                                <rect key="frame" x="25" y="709" width="333" height="44"/>
+                                                <rect key="frame" x="27" y="649" width="333" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <state key="normal" title="Indie" image="IndieThemIcon"/>
@@ -2170,7 +2175,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2fN-xM-8Fb">
-                                                <rect key="frame" x="25" y="765" width="333" height="44"/>
+                                                <rect key="frame" x="27" y="705" width="333" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <state key="normal" title="R&amp;B" image="R&amp;BThemIcon"/>
@@ -2179,7 +2184,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="drD-OM-TYB">
-                                                <rect key="frame" x="23" y="820" width="333" height="44"/>
+                                                <rect key="frame" x="25" y="760" width="333" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <state key="normal" title="Rock" image="RockThemIcon"/>
@@ -2523,7 +2528,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0t3-hm-ZDY">
-                                        <rect key="frame" x="128" y="60" width="110" height="15"/>
+                                        <rect key="frame" x="128" y="60" width="188" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -2795,12 +2800,11 @@
     </scenes>
     <resources>
         <image name="AccountImage.png" width="286" height="228"/>
-        <image name="AutumnThemeIcon.png" width="177.75" height="141.75"/>
         <image name="BalladThemIcon" width="1063" height="142"/>
         <image name="BlueThemIcon" width="1063" height="142"/>
         <image name="CountryThemIcon" width="1063" height="142"/>
         <image name="DanceThemIcon" width="1063" height="142"/>
-        <image name="EletronicThemIcon" width="1063" height="142"/>
+        <image name="ElectronicThemIcon" width="1063" height="142"/>
         <image name="ErrorInput.png" width="873" height="843"/>
         <image name="FeelingThemeIcon" width="237" height="189"/>
         <image name="Home" width="300" height="300"/>
@@ -2813,6 +2817,7 @@
         <image name="RelaxThemeIcon" width="237" height="189"/>
         <image name="RockThemIcon" width="1063" height="142"/>
         <image name="Search" width="300" height="300"/>
+        <image name="SeasonThemeIcon.png" width="177.75" height="141.75"/>
         <image name="SportThemeIcon.png" width="177.75" height="141.75"/>
         <image name="StudyThemeIcon.png" width="177.75" height="141.75"/>
         <image name="TimeMachineIcon.png" width="177.75" height="141.75"/>

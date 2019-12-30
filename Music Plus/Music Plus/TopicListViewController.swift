@@ -179,7 +179,7 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
         
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
-    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
@@ -324,8 +324,6 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
             
             if jsonTopicListObjectArray[index].song_lyrics == nil
             {
-                //print(jsonObjectArray[index].song_id)
-                //print(jsonObjectArray[index].song_name)
                 jsonTopicListObjectArray[index].song_lyrics = "目前無歌詞"
             }
             
@@ -396,20 +394,32 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
                 isDownload = 1
                 print("Error downloading file : \(error)")
             }
-            DispatchQueue.main.async{
+            /*DispatchQueue.main.async{
                 self.TopicListSongTableView.reloadData()
-            }
+            }*/
             self.SongCount = self.SongCount + 1
             print(self.SongCount)
             
-            if self.SongCount == 12
+            /*if self.SongCount == 12
             {
                 DispatchQueue.main.async{
                     self.TopicListSongTableView.isHidden = false
                     self.LoadingActivityIndicator.stopAnimating()
                 }
-            }
+            }*/
         }.resume()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        run(after: 6)
+        {
+            self.TopicListSongTableView.reloadData()
+            DispatchQueue.main.async{
+                self.TopicListSongTableView.isHidden = false
+                self.LoadingActivityIndicator.stopAnimating()
+                self.LoadingActivityIndicator.isHidden = true
+            }
+        }
     }
     
     @objc func connected(sender: UIButton)
@@ -517,12 +527,9 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
     var jsonObjectGenreListArray = [SongInfo]()
     var GenreListSongArray = [SONG]()
     
-    
+    @IBOutlet weak var LoadingActivityIndicator: UIActivityIndicatorView!
     
     @IBOutlet weak var GenreListSongTableView: UITableView!
-    
-    
-    
     
     @IBOutlet weak var GenreNameLabel: UILabel!
     
@@ -537,6 +544,8 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        LoadingActivityIndicator.startAnimating()
         
             GenreNameLabel.text = GenreName
         DispatchQueue.main.async {
@@ -658,11 +667,29 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
     override func viewDidAppear(_ animated: Bool) {
         if(RecommendListLoad == false)
         {
-            run(after: 4)
+            // Dance
+            if GenreId == 4
             {
-                self.GenreListSongTableView.reloadData()
-                DispatchQueue.main.async {
-                    self.GenreListSongTableView.isHidden = false
+                run(after: 10)
+                {
+                    self.GenreListSongTableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.LoadingActivityIndicator.stopAnimating()
+                        self.LoadingActivityIndicator.isHidden = true
+                        self.GenreListSongTableView.isHidden = false
+                    }
+                }
+            }
+            else
+            {
+                run(after: 6)
+                {
+                    self.GenreListSongTableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.LoadingActivityIndicator.stopAnimating()
+                        self.LoadingActivityIndicator.isHidden = true
+                        self.GenreListSongTableView.isHidden = false
+                    }
                 }
             }
         }

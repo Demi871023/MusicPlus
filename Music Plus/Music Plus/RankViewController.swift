@@ -762,7 +762,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank1LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank1LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank1LineDataSet.drawValuesEnabled = false;
-        
+        Rank1LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank1LineDataSet)
         
         // 第二名 藍色
@@ -772,7 +772,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values2[i])
             Rank2LineArray.append(data)
         }
-        //Rank2LineDataSet.label = "ttttttt"
         let Rank2LineDataSet = LineChartDataSet.init(entries: Rank2LineArray, label: "METEOR")
         Rank2LineDataSet.lineWidth = 3
         Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
@@ -799,6 +798,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank3LineDataSet.drawValuesEnabled = false;
+        Rank3LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank3LineDataSet)
         
         // 第4名 螢色
@@ -817,6 +817,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
         Rank4LineDataSet.drawValuesEnabled = false;
+        Rank4LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank4LineDataSet)
         
         // 第5名 藍綠色
@@ -853,6 +854,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank6LineDataSet.drawValuesEnabled = false;
+        Rank6LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank6LineDataSet)
         
         // 第7名 粉色

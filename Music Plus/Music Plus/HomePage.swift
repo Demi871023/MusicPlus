@@ -88,6 +88,7 @@ class HomePVCRank: UIViewController{
 
 class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
+    @IBOutlet weak var LoadingActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var SongRecommendTitleLabel: UILabel!
     @IBOutlet weak var SongRecommendTableView: UITableView!
     
@@ -99,6 +100,8 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        LoadingActivityIndicator.startAnimating()
         SongRecommendTitleLabel.text = UserNickName
         if(RecommendListLoad == false)
         {
@@ -234,6 +237,8 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
             {
                 self.SongRecommendTableView.reloadData()
                 DispatchQueue.main.async {
+                    self.LoadingActivityIndicator.stopAnimating()
+                    self.LoadingActivityIndicator.isHidden = true
                     self.SongRecommendTableView.isHidden = false
                 }
             }
