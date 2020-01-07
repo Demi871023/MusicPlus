@@ -660,11 +660,40 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
                         print(error)
                     }
                 }
+                
+                //if(RecommendListLoad == false)
+                //{
+                    // Dance
+                    if self.GenreId == 4
+                    {
+                        self.run(after: 10)
+                        {
+                            self.GenreListSongTableView.reloadData()
+                            DispatchQueue.main.async {
+                                self.LoadingActivityIndicator.stopAnimating()
+                                self.LoadingActivityIndicator.isHidden = true
+                                self.GenreListSongTableView.isHidden = false
+                            }
+                        }
+                    }
+                    else
+                    {
+                        self.run(after: 6)
+                        {
+                            self.GenreListSongTableView.reloadData()
+                            DispatchQueue.main.async {
+                                self.LoadingActivityIndicator.stopAnimating()
+                                self.LoadingActivityIndicator.isHidden = true
+                                self.GenreListSongTableView.isHidden = false
+                            }
+                        }
+                    }
+                //}
             }.resume()
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    /*override func viewDidAppear(_ animated: Bool) {
         if(RecommendListLoad == false)
         {
             // Dance
@@ -693,7 +722,7 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
                 }
             }
         }
-    }
+    }*/
     
     @objc func connected(sender: UIButton)
     {

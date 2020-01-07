@@ -1121,6 +1121,32 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
     
 }
 
+class SONGTEST {
+    let Id: Int
+    let Cover: URL
+    let Album: String
+    let SongName: String
+    let Singer: String
+    let Lyrics: String
+    let Category: SongType
+    var SongPath: URL
+    var SongLength: Double
+    var ExistFlag: Bool
+    
+    init(Id:Int, Cover: URL, Album:String, SongName: String, Singer: String, Lyrics: String, Category: SongType, SongPath: URL, SongLength: Double, ExistFlag: Bool)
+    {
+        self.Id = Id
+        self.Cover = Cover
+        self.Album = Album
+        self.SongName = SongName
+        self.Singer = Singer
+        self.Lyrics = Lyrics
+        self.Category = Category
+        self.SongPath = SongPath
+        self.SongLength = SongLength
+        self.ExistFlag = ExistFlag
+    }
+}
 
 
 class SONG {

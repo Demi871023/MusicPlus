@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+var MyListSongIdForCheck:Array<Int> = Array()
+
 
 class CenterPageViewController: UIPageViewController,FetchSelectRow {
     func fetchInt(rowNumber: Int) {
@@ -44,6 +46,50 @@ class CenterPageViewController: UIPageViewController,FetchSelectRow {
         dataSource = self
         delegate = self
         setViewControllerFromIndex(index: 1)
+        
+        let parameters:[String:Any] = ["UserId": UserId]  as! [String:Any]
+        
+        guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/getlist") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+        
+        request.httpBody = httpBody
+        
+        let session = URLSession.shared
+        session.dataTask(with:  request) {
+            (data, response, error) in
+            if let response = response {
+                print(response)
+            }
+            
+            if let data = data {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    print(json)
+                    
+                    let json2 = try JSONDecoder().decode(MyList.self, from: data)
+                    let pl = json2.personal_list
+                    
+                    print("=============")
+                    for (index,element) in pl.enumerated()
+                    {
+                        MyListSongIdForCheck.append(Int(pl[index]) ?? 0)
+                    }
+                    
+                    //[1,3,4]
+                    print(MyListSongIdForCheck)
+                    print("=============")
+
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }.resume()
         
         
     }

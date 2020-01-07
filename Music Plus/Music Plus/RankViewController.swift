@@ -27,7 +27,7 @@ struct SongInfomation: Decodable{
     let song_artist: String?
     let song_album: String?
     let song_photo: URL?
-    let song_lyrics: String?
+    var song_lyrics: String?
 }
 
 class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
@@ -36,12 +36,13 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     @IBOutlet weak var Line2SongNameLabel: UILabel!
     @IBOutlet weak var Line3SongNameLabel: UILabel!
     @IBOutlet weak var Line4SongNameLabel: UILabel!
+    @IBOutlet weak var Line5SongNameLabel: UILabel!
+    @IBOutlet weak var Line6SongNameLabel: UILabel!
     
     var CSongNameChartLabelArray:Array<UILabel> = Array()
-    
     var CSongRankChartSongName:Array<String> = Array()
-    
-    
+
+    @IBOutlet weak var SongNotInDBLabel: UILabel!
     @IBOutlet weak var LineCChartView: LineChartView!
     @IBOutlet weak var CChartTableView: UITableView!
     
@@ -80,6 +81,11 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     var RankData:[Top3type] = []
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        DispatchQueue.main.async(){
+            //print(self.KSongRankArray.count)
+            self.SongNotInDBLabel.isHidden = true
+        }
         
         self.navigationController?.isNavigationBarHidden = false
         //self.navigationController?.navigationBar.topItem?.title = "華語排行榜"
@@ -223,7 +229,7 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                         let album = SongData[index].song_album ?? ""
                         
                         let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-                        self.CSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        self.CSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Id:SongData[index].song_id, Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Album: SongData[index].song_album ?? "", Lyrics: SongData[index].song_lyrics ?? "" ,Category: .Korean))
                         
                         
                         //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
@@ -264,12 +270,12 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                 }
             }
             
-            self.CSongNameChartLabelArray = [self.Line1SongNameLabel, self.Line2SongNameLabel, self.Line3SongNameLabel,self.Line4SongNameLabel]
+            self.CSongNameChartLabelArray = [self.Line1SongNameLabel, self.Line2SongNameLabel, self.Line3SongNameLabel,self.Line4SongNameLabel, self.Line5SongNameLabel, self.Line6SongNameLabel]
             
             
             for (index, element) in self.CSongRankChartSongName.enumerated()
             {
-                self.CSongNameChartLabelArray[index].text = "• " + self.CSongRankChartSongName[index]
+                self.CSongNameChartLabelArray[index].text = "▩ " + self.CSongRankChartSongName[index]
             }
             self.SetUpLineKChart(name: self.yarisTime, basic: self.basicData, values1: self.RankLineData[0], values2: self.RankLineData[1], values3: self.RankLineData[2], values4: self.RankLineData[3], values5: self.RankLineData[4], values6: self.RankLineData[5], values7: self.RankLineData[6], values8: self.RankLineData[7], values9: self.RankLineData[8], values10: self.RankLineData[9])
         }
@@ -364,10 +370,154 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank3LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank3LineDataSet)
         
+        // 第4名 螢色
+        for i in 0..<name.count{
+            let y = values4[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
+            Rank4LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
+        
+        Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
+        Rank4LineDataSet.drawValuesEnabled = false;
+        Rank4LineDataSet.mode = .horizontalBezier
+        data.addDataSet(Rank4LineDataSet)
+        
+        // 第5名 藍綠色
+        for i in 0..<name.count{
+            let y = values5[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
+            Rank5LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
+        
+        Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank5LineDataSet.drawValuesEnabled = false;
+        data.addDataSet(Rank5LineDataSet)
+        
+        // 第6名 紫色
+        for i in 0..<name.count{
+            let y = values6[i]
+            if y == 0 {continue}
+            let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
+            Rank6LineArray.append(data)
+        }
+        //第一條折線名稱
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
+        
+        Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
+        Rank6LineDataSet.colors = [UIColor(red:156/255, green: 101/255, blue:255/255, alpha: 1)] // 設置折線顏色：粉色
+        //linedataset.circleHoleRadius = 1
+        Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
+        Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
+        Rank6LineDataSet.drawValuesEnabled = false;
+        Rank6LineDataSet.mode = .horizontalBezier
+        data.addDataSet(Rank6LineDataSet)
+        
         self.LineCChartView.data = data
         var axisFormatDelgate: IAxisValueFormatter?
         LineCChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineCChartView.xAxis.granularity = 1
+    }
+    
+    @objc func connected(sender: UIButton)
+    {
+        var isExistInMyList:Bool = false
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        print("Heart Click")
+        let ClickButtonRow = sender.tag
+        print(CSongRankArray[ClickButtonRow].Id)
+        print(CSongRankArray[ClickButtonRow].SongName)
+        print(CSongRankArray.enumerated())
+        
+        
+        if CSongRankArray[ClickButtonRow].Id == -1
+        {
+            SongNotInDBLabel.text = "資料庫中無此歌曲"
+            DispatchQueue.main.async(){
+                //print(self.KSongRankArray.count)
+                self.SongNotInDBLabel.isHidden = false
+            }
+            print("資料庫中無此首歌曲")
+        }
+            
+        else
+        {
+            for (index,element) in SongSearchArray.enumerated()
+            {
+                if SongSearchArray[index].Id == CSongRankArray[ClickButtonRow].Id
+                {
+                    isExistInMyList = true
+                }
+            }
+            
+            if isExistInMyList == false
+            {
+                SongSearchArray.append(SONG(Id:CSongRankArray[ClickButtonRow].Id, Cover: CSongRankArray[ClickButtonRow].Cover, Album: CSongRankArray[ClickButtonRow].Album, SongName: CSongRankArray[ClickButtonRow].SongName, Singer: CSongRankArray[ClickButtonRow].Singer, Lyrics: CSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                SongArray.append(SONG(Id:CSongRankArray[ClickButtonRow].Id, Cover: CSongRankArray[ClickButtonRow].Cover, Album: CSongRankArray[ClickButtonRow].Album, SongName: CSongRankArray[ClickButtonRow].SongName, Singer: CSongRankArray[ClickButtonRow].Singer, Lyrics: CSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                
+                SongNotInDBLabel.text = "成功加入此歌曲"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                /*DispatchQueue.main.async {
+                 self.AddSuccessNotificationLabel.isHidden = false
+                 // UIView usage
+                 }*/
+                
+                let parameters:[String:Any] = ["UserId": UserId, "SongId": CSongRankArray[ClickButtonRow].Id] as! [String:Any]
+                
+                guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
+                
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+                
+                request.httpBody = httpBody
+                
+                let session = URLSession.shared
+                session.dataTask(with:  request){
+                    (data, response, error) in
+                    if let response = response{
+                        print(response)
+                    }
+                    if let data = data{
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data, options: [])
+                            print(json)
+                            
+                        }
+                        catch{
+                            print(error)
+                        }
+                    }
+                    }.resume()
+            }
+            else
+            {
+                SongNotInDBLabel.text = "此歌曲已經存在於個人歌單中"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                print("此歌曲已經新增至個人歌單中")
+            }
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -388,6 +538,9 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         //cell.CoverCell.image = UIImage(named: CSongRankArray[indexPath.row].Cover.path)
         cell.SongNameCell.text = CSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = CSongRankArray[indexPath.row].Singer
+        
+        cell.LikeHeartButtonCell.tag = indexPath.row
+        cell.LikeHeartButtonCell.addTarget(self, action: #selector(connected(sender:)), for: .touchUpInside)
         
         return cell
     }
@@ -412,6 +565,8 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var LineKChartView: LineChartView!
     @IBOutlet weak var KChartTableView: UITableView!
+    
+    @IBOutlet weak var SongNotInDBLabel: UILabel!
     
     var KSongRankArray = [SongRank]()
     
@@ -478,7 +633,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                         let album = SongData[index].song_album ?? ""
                         
                         let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-                        self.KSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        self.KSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Id: SongData[index].song_id,Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Album: SongData[index].song_album ?? "", Lyrics: SongData[index].song_lyrics ?? "" , Category: .Korean))
                         
                         
                         //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
@@ -594,6 +749,12 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        DispatchQueue.main.async(){
+            //print(self.KSongRankArray.count)
+            self.SongNotInDBLabel.isHidden = true
+        }
+        
         self.navigationController?.isNavigationBarHidden = false
         //self.navigationController?.navigationBar.topItem?.title = "韓語排行榜"
         self.navigationController?.navigationBar.tintColor = UIColor.orange
@@ -939,6 +1100,94 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
 
     }
     
+    @objc func connected(sender: UIButton)
+    {
+        var isExistInMyList:Bool = false
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        print("Heart Click")
+        let ClickButtonRow = sender.tag
+        print(KSongRankArray[ClickButtonRow].Id)
+        print(KSongRankArray[ClickButtonRow].SongName)
+        print(KSongRankArray.enumerated())
+        
+        
+        if KSongRankArray[ClickButtonRow].Id == -1
+        {
+            SongNotInDBLabel.text = "資料庫中無此歌曲"
+            DispatchQueue.main.async(){
+                //print(self.KSongRankArray.count)
+                self.SongNotInDBLabel.isHidden = false
+            }
+            print("資料庫中無此首歌曲")
+        }
+            
+        else
+        {
+            for (index,element) in SongSearchArray.enumerated()
+            {
+                if SongSearchArray[index].Id == KSongRankArray[ClickButtonRow].Id
+                {
+                    isExistInMyList = true
+                }
+            }
+            
+            if isExistInMyList == false
+            {
+                SongSearchArray.append(SONG(Id:KSongRankArray[ClickButtonRow].Id, Cover: KSongRankArray[ClickButtonRow].Cover, Album: KSongRankArray[ClickButtonRow].Album, SongName: KSongRankArray[ClickButtonRow].SongName, Singer: KSongRankArray[ClickButtonRow].Singer, Lyrics: KSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                SongArray.append(SONG(Id:KSongRankArray[ClickButtonRow].Id, Cover: KSongRankArray[ClickButtonRow].Cover, Album: KSongRankArray[ClickButtonRow].Album, SongName: KSongRankArray[ClickButtonRow].SongName, Singer: KSongRankArray[ClickButtonRow].Singer, Lyrics: KSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                
+                SongNotInDBLabel.text = "成功加入此歌曲"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                /*DispatchQueue.main.async {
+                 self.AddSuccessNotificationLabel.isHidden = false
+                 // UIView usage
+                 }*/
+                
+                let parameters:[String:Any] = ["UserId": UserId, "SongId": KSongRankArray[ClickButtonRow].Id] as! [String:Any]
+                
+                guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
+                
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+                
+                request.httpBody = httpBody
+                
+                let session = URLSession.shared
+                session.dataTask(with:  request){
+                    (data, response, error) in
+                    if let response = response{
+                        print(response)
+                    }
+                    if let data = data{
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data, options: [])
+                            print(json)
+                            
+                        }
+                        catch{
+                            print(error)
+                        }
+                    }
+                    }.resume()
+            }
+            else
+            {
+                SongNotInDBLabel.text = "此歌曲已經存在於個人歌單中"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                print("此歌曲已經新增至個人歌單中")
+            }
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -956,6 +1205,8 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
         cell.SongNameCell.text = KSongRankArray[indexPath.row].SongName
         cell.SingerCell.text = KSongRankArray[indexPath.row].Singer
+        cell.LikeHeartButtonCell.tag = indexPath.row
+        cell.LikeHeartButtonCell.addTarget(self, action: #selector(connected(sender:)), for: .touchUpInside)
         
         return cell
     }
@@ -974,6 +1225,10 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     @IBOutlet weak var Line4SongNameLabel: UILabel!
     @IBOutlet weak var Line5SongNameLabel: UILabel!
     @IBOutlet weak var Line6SongNameLabel: UILabel!
+    
+    
+    
+    @IBOutlet weak var SongNotInDBLabel: UILabel!
     
     
     var WSongNameChartLabelArray:Array<UILabel> = Array()
@@ -1037,7 +1292,7 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
             if let data = data {
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: [])
-                    let SongData = try JSONDecoder().decode([SongInfomation].self, from:data)
+                    var SongData = try JSONDecoder().decode([SongInfomation].self, from:data)
                     print(SongData)
                     
                     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -1048,7 +1303,12 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
                         let album = SongData[index].song_album ?? ""
                         
                         let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-                        self.WSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Category: .Korean))
+                        
+                        if SongData[index].song_lyrics == nil
+                        {
+                            SongData[index].song_lyrics = "目前無歌詞"
+                        }
+                        self.WSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Id: SongData[index].song_id, Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Album: SongData[index].song_album ?? "", Lyrics: SongData[index].song_lyrics ?? "", Category: .Korean))
                         
                         
                         //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
@@ -1095,7 +1355,7 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
             
             for (index, element) in self.WSongRankChartSongName.enumerated()
             {
-                self.WSongNameChartLabelArray[index].text = "• " + self.WSongRankChartSongName[index]
+                self.WSongNameChartLabelArray[index].text = "▩ " + self.WSongRankChartSongName[index]
             }
             
             self.SetUpLineKChart(name: self.yarisTime, basic: self.basicData, values1: self.RankLineData[0], values2: self.RankLineData[1], values3: self.RankLineData[2], values4: self.RankLineData[3], values5: self.RankLineData[4], values6: self.RankLineData[5], values7: self.RankLineData[6], values8: self.RankLineData[7], values9: self.RankLineData[8], values10: self.RankLineData[9])
@@ -1105,9 +1365,16 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        
+        DispatchQueue.main.async(){
+            //print(self.KSongRankArray.count)
+            self.SongNotInDBLabel.isHidden = true
+        }
+        
         
         // 設置導覽列
-        self.navigationController?.isNavigationBarHidden = false
+    self.navigationController?.isNavigationBarHidden = false
         //self.navigationController?.navigationBar.topItem?.title = "西洋排行榜"
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
@@ -1364,6 +1631,97 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         LineWChartView.xAxis.granularity = 1
     }
     
+    @objc func connected(sender: UIButton)
+    {
+        var isExistInMyList:Bool = false
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        print("Heart Click")
+        let ClickButtonRow = sender.tag
+        print(WSongRankArray[ClickButtonRow].Id)
+        print(WSongRankArray[ClickButtonRow].SongName)
+        print(WSongRankArray.enumerated())
+        
+        
+        if WSongRankArray[ClickButtonRow].Id == -1
+        {
+            SongNotInDBLabel.text = "資料庫中無此歌曲"
+            DispatchQueue.main.async(){
+                //print(self.KSongRankArray.count)
+                self.SongNotInDBLabel.isHidden = false
+            }
+            print("資料庫中無此首歌曲")
+        }
+        
+        else
+        {
+            for (index,element) in SongSearchArray.enumerated()
+            {
+                if SongSearchArray[index].Id == WSongRankArray[ClickButtonRow].Id
+                {
+                    isExistInMyList = true
+                }
+            }
+            
+            if isExistInMyList == false
+            {
+                SongSearchArray.append(SONG(Id:WSongRankArray[ClickButtonRow].Id, Cover: WSongRankArray[ClickButtonRow].Cover, Album: WSongRankArray[ClickButtonRow].Album, SongName: WSongRankArray[ClickButtonRow].SongName, Singer: WSongRankArray[ClickButtonRow].Singer, Lyrics: WSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                
+                
+                
+                SongArray.append(SONG(Id:WSongRankArray[ClickButtonRow].Id, Cover: WSongRankArray[ClickButtonRow].Cover, Album: WSongRankArray[ClickButtonRow].Album, SongName: WSongRankArray[ClickButtonRow].SongName, Singer: WSongRankArray[ClickButtonRow].Singer, Lyrics: WSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
+                
+                SongNotInDBLabel.text = "成功加入此歌曲"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                /*DispatchQueue.main.async {
+                 self.AddSuccessNotificationLabel.isHidden = false
+                 // UIView usage
+                 }*/
+                
+                let parameters:[String:Any] = ["UserId": UserId, "SongId": WSongRankArray[ClickButtonRow].Id] as! [String:Any]
+                
+                guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/addsong") else {return}
+                
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                
+                guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
+                
+                request.httpBody = httpBody
+                
+                let session = URLSession.shared
+                session.dataTask(with:  request){
+                    (data, response, error) in
+                    if let response = response{
+                        print(response)
+                    }
+                    if let data = data{
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data, options: [])
+                            print(json)
+                            
+                        }
+                        catch{
+                            print(error)
+                        }
+                    }
+                }.resume()
+            }
+            else
+            {
+                SongNotInDBLabel.text = "此歌曲已經存在於個人歌單中"
+                DispatchQueue.main.async(){
+                    //print(self.KSongRankArray.count)
+                    self.SongNotInDBLabel.isHidden = false
+                }
+                print("此歌曲已經新增至個人歌單中")
+            }
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -1382,6 +1740,9 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         cell.SongNameCell.text = WSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = WSongRankArray[indexPath.row].Singer
         
+        cell.LikeHeartButtonCell.tag = indexPath.row
+        cell.LikeHeartButtonCell.addTarget(self, action: #selector(connected(sender:)), for: .touchUpInside)
+        
         return cell
     }
     
@@ -1393,17 +1754,23 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
 
 class SongRank{
     let Rank: String
+    let Id: Int
     let Cover: URL
     let SongName: String
     let Singer: String
+    let Album: String
+    var Lyrics: String?
     let Category: SongType
     
-    init(Rank:String, Cover: URL, SongName: String, Singer: String, Category:SongType)
+    init(Rank:String, Id:Int, Cover: URL, SongName: String, Singer: String, Album: String, Lyrics: String, Category:SongType)
     {
         self.Rank = Rank
+        self.Id = Id
         self.Cover = Cover
         self.SongName = SongName
         self.Singer = Singer
+        self.Album = Album
+        self.Lyrics = Lyrics
         self.Category = Category
     }
 }

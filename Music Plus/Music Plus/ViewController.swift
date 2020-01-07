@@ -186,7 +186,7 @@ class UserProfileViewController: UIViewController{
         //NickNameTextField.text = "Demi871023"
         //EmailTextField.text = "demi871023@gmail.com"
         EditUserProfileButton.backgroundColor = UIColor.orange
-        MyPhotoImage.image = UIImage(named: "MyPhoto")
+        //MyPhotoImage.image = UIImage(named: "MyPhoto")
        
         //MyPhotoImage.clipsToBounds = true
         //MyPhotoImage.layer.cornerRadius = MyPhotoImage.frame.size.width / 2

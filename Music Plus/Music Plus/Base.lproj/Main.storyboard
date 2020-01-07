@@ -908,7 +908,7 @@
                                         <color key="tintColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EWj-N3-xqF">
-                                        <rect key="frame" x="17" y="0.0" width="155" height="15"/>
+                                        <rect key="frame" x="17" y="0.0" width="110" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -916,7 +916,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2xc-pe-1MT">
-                                        <rect key="frame" x="180" y="-1" width="155" height="15"/>
+                                        <rect key="frame" x="126" y="-1" width="110" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -924,7 +924,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mw0-VP-6nZ">
-                                        <rect key="frame" x="17" y="23" width="155" height="15"/>
+                                        <rect key="frame" x="17" y="23" width="110" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
@@ -932,11 +932,26 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F6m-jJ-fNb">
-                                        <rect key="frame" x="180" y="22" width="155" height="15"/>
+                                        <rect key="frame" x="128" y="22" width="110" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" red="0.96470588235294119" green="0.92941176470588238" blue="0.19215686274509802" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yLH-U3-X7h">
+                                        <rect key="frame" x="246" y="23" width="110" height="15"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" red="0.61176470589999998" green="0.39787564209999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZvP-7L-OOH">
+                                        <rect key="frame" x="246" y="-1" width="110" height="15"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" red="0.61176470588235299" green="1" blue="0.86274509803921573" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -984,10 +999,16 @@
                                                     <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRq-RN-6Gx">
+                                                    <rect key="frame" x="317" y="16" width="36" height="37"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Button" image="LikeSongIcon.png"/>
+                                                </button>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="CoverCell" destination="MGM-xI-SMh" id="hgy-RT-e1U"/>
+                                            <outlet property="LikeHeartButtonCell" destination="VRq-RN-6Gx" id="1le-v2-C0G"/>
                                             <outlet property="RankCell" destination="nVy-8Q-8uu" id="gCH-TJ-gRP"/>
                                             <outlet property="SingerCell" destination="LFA-Uw-vyG" id="lzP-Uj-ZSJ"/>
                                             <outlet property="SongNameCell" destination="3ZR-Aa-A05" id="9PD-JW-rUE"/>
@@ -999,6 +1020,14 @@
                                     <outlet property="delegate" destination="kDm-Kk-3jQ" id="oRT-v3-528"/>
                                 </connections>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="資料庫中找不到此歌曲" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="29W-li-Oyu">
+                                <rect key="frame" x="56" y="600" width="253" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="4xU-8V-GaS"/>
@@ -1009,7 +1038,10 @@
                         <outlet property="Line2SongNameLabel" destination="Mw0-VP-6nZ" id="3zm-GC-nzK"/>
                         <outlet property="Line3SongNameLabel" destination="2xc-pe-1MT" id="PVF-6b-0DJ"/>
                         <outlet property="Line4SongNameLabel" destination="F6m-jJ-fNb" id="M3v-8I-3qM"/>
+                        <outlet property="Line5SongNameLabel" destination="ZvP-7L-OOH" id="AT6-cy-EV1"/>
+                        <outlet property="Line6SongNameLabel" destination="yLH-U3-X7h" id="bWw-vw-dFJ"/>
                         <outlet property="LineCChartView" destination="wqZ-Am-AeR" id="1Ta-e9-wGk"/>
+                        <outlet property="SongNotInDBLabel" destination="29W-li-Oyu" id="shP-gT-1V7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Db0-W0-X91" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1647,6 +1679,10 @@
                                     <action selector="EditUserProfile" destination="swn-Wj-WjK" eventType="touchUpInside" id="L8s-aM-xe2"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="AccountImage" translatesAutoresizingMaskIntoConstraints="NO" id="nf4-8M-9ri">
+                                <rect key="frame" x="65" y="141" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="wzy-Ec-wR7"/>
@@ -2594,10 +2630,16 @@
                                                     <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CeE-GA-N00">
+                                                    <rect key="frame" x="317" y="11" width="36" height="37"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Button" image="LikeSongIcon.png"/>
+                                                </button>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="CoverCell" destination="MZE-lZ-72m" id="R7P-6P-NLm"/>
+                                            <outlet property="LikeHeartButtonCell" destination="CeE-GA-N00" id="cAK-sU-pLB"/>
                                             <outlet property="RankCell" destination="ysh-Jh-P8L" id="QVd-Yd-Jnw"/>
                                             <outlet property="SingerCell" destination="l4b-Tt-KzI" id="rfK-en-0Ec"/>
                                             <outlet property="SongNameCell" destination="hhj-i0-Qkz" id="nti-Qr-Q6i"/>
@@ -2609,6 +2651,14 @@
                                     <outlet property="delegate" destination="dOZ-0H-eLv" id="04m-Xh-OtE"/>
                                 </connections>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="資料庫中找不到此歌曲" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eMg-BS-S7Z">
+                                <rect key="frame" x="56" y="600" width="253" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <viewLayoutGuide key="safeArea" id="CBS-kB-LBI"/>
@@ -2621,6 +2671,7 @@
                         <outlet property="Line5SongNameLabel" destination="32N-rl-z4d" id="rjt-nE-Gic"/>
                         <outlet property="Line6SongNameLabel" destination="l4f-JV-j2d" id="zpd-AD-ONl"/>
                         <outlet property="LineWChartView" destination="gJk-EW-NtG" id="S4c-SV-U9O"/>
+                        <outlet property="SongNotInDBLabel" destination="eMg-BS-S7Z" id="Emx-MX-6m1"/>
                         <outlet property="WChartTableView" destination="cNj-jb-28E" id="FQf-0v-lMh"/>
                     </connections>
                 </viewController>
@@ -2691,7 +2742,15 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" red="0.61176470588235299" green="0.39787564212328769" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="資料庫中找不到此歌曲" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tn6-VP-vyI">
+                                        <rect key="frame" x="66" y="600" width="235" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.0" green="0.021833855030000002" blue="0.077174456220000007" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.95333973139999995" green="0.93361210419999996" blue="0.95453770419999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -2740,10 +2799,16 @@
                                                     <rect key="frame" x="62" y="7" width="50" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hy6-75-nWb">
+                                                    <rect key="frame" x="309" y="16" width="36" height="37"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" title="Button" image="LikeSongIcon.png"/>
+                                                </button>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="CoverCell" destination="NFw-FK-gVQ" id="3dJ-BN-2LD"/>
+                                            <outlet property="LikeHeartButtonCell" destination="Hy6-75-nWb" id="aWr-MF-r2u"/>
                                             <outlet property="RankCell" destination="6A1-CU-PSY" id="OJq-iS-9Sn"/>
                                             <outlet property="SingerCell" destination="d1n-Mv-TDJ" id="wgB-gU-3CV"/>
                                             <outlet property="SongNameCell" destination="Pft-4s-ylJ" id="Shx-il-iDa"/>
@@ -2768,6 +2833,7 @@
                         <outlet property="Line5SongNameLabel" destination="h9q-Dl-CSZ" id="eY3-dH-2Ue"/>
                         <outlet property="Line6SongNameLabel" destination="lpb-6S-lkF" id="TbL-Ga-za6"/>
                         <outlet property="LineKChartView" destination="SOq-dH-4Lz" id="i9o-AW-0W0"/>
+                        <outlet property="SongNotInDBLabel" destination="tn6-VP-vyI" id="ceD-vl-HMJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F3v-SU-bpt" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2799,6 +2865,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="AccountImage" width="286" height="228"/>
         <image name="AccountImage.png" width="286" height="228"/>
         <image name="BalladThemIcon" width="1063" height="142"/>
         <image name="BlueThemIcon" width="1063" height="142"/>

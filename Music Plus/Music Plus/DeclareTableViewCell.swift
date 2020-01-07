@@ -15,7 +15,7 @@ class KSongsRankTableViewCell: UITableViewCell {
     @IBOutlet weak var CoverCell: UIImageView!
     @IBOutlet weak var SongNameCell: UILabel!
     @IBOutlet weak var SingerCell: UILabel!
-    
+    @IBOutlet weak var LikeHeartButtonCell: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -33,6 +33,7 @@ class CSongsRankTableViewCell: UITableViewCell {
     @IBOutlet weak var CoverCell: UIImageView!
     @IBOutlet weak var SongNameCell: UILabel!
     @IBOutlet weak var SingerCell: UILabel!
+    @IBOutlet weak var LikeHeartButtonCell: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -49,7 +50,7 @@ class WSongsRankTableViewCell: UITableViewCell {
     @IBOutlet weak var CoverCell: UIImageView!
     @IBOutlet weak var SongNameCell: UILabel!
     @IBOutlet weak var SingerCell: UILabel!
-    
+    @IBOutlet weak var LikeHeartButtonCell: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
     }
