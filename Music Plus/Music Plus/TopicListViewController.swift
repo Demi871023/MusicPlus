@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 import AVFoundation
 
-
 var TopicListSong = [SONG]()
 var jsonTopicListObjectArray = [SongInfo]()
 var TopicListSongArray = [SONG]()
@@ -21,12 +20,10 @@ var TopicListCoverImageName:Array<String> = ["ListIdOneCover","ListIdTwoCover","
 var TopicListBackgroundImageName:Array<String> = ["ListIdOneBackground","ListIdTwoBackground","ListIdThreeBackground","ListIdFourBackground","ListIdFiveBackground","ListIdSixBackground","ListIdSevenBackground","ListIdEightBackground","ListIdNineBackground", "ListIdTenBackground", "ListIdElevenBackground", "ListIdTwelveBackground"]
 
 
+// 主題歌單 - 情境，先依照 Topic ID 取得有哪些 list
 class TopicListViewController: UIViewController{
     var ListArray = [List]()
-    
     var timer: Timer?
-    
-    
     
     @IBOutlet weak var ListOneImage: UIImageView!
     @IBOutlet weak var ListNameOneLabel: UILabel!
@@ -122,8 +119,6 @@ class TopicListViewController: UIViewController{
         }
     }
     
-    //IntoTopicListSongSegue
-    
     @IBAction func PostListIdTwo(_ sender: Any) {
         PostListId = ListArray[1].ListId
         PostListName = ListArray[1].ListName
@@ -136,30 +131,25 @@ class TopicListViewController: UIViewController{
         let vc = segue.destination as! TopicListSongViewController
         vc.ListId = PostListId
         vc.ListName = PostListName
-        //let vc = segue.destination as! FifthPageViewController
     }
     @IBAction func didUnwindFromListPage(_ sender: UIStoryboardSegue)
     {
         guard let NowListeningSongIndex = sender.source as? TopicListSongViewController else{ return }
-        //let  = NowListeningSongIndex.songindex
-        //print(selectSongNumber)
-        
     }
     
 }
 
+// 主題歌單 - 情境，依照 List ID 取得有哪些 Song ID
 class TopicListSongViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var LoadingActivityIndicator: UIActivityIndicatorView!
     
     var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
     
-    
     @IBOutlet weak var LoadingView: UIView!
     
     @IBOutlet weak var AddSuccessNotificationLabel: UILabel!
     @IBOutlet weak var TopicListSongTableView: UITableView!
-    
     
     @IBOutlet weak var TopicListImage: UIImageView!
     @IBOutlet weak var TopicListNameLabel: UILabel!
@@ -167,12 +157,6 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
     var ListId:Int = 0
     var ListName:String = ""
     var SongCount:Int = Int()
-    
-    /*override func viewWillAppear(_ animated: Bool) {
-     super.viewWillAppear(animated)
-     GetListSongByListId()
-     }*/
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -191,23 +175,14 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
         var blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
         var blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = view.bounds
-        //BackgroundImage.addSubview(blurEffectView)
         TopicListImage.image = UIImage(named: TopicListBackgroundImageName[ListId-1])
         TopicListImage.addSubview(blurEffectView)
         
         DispatchQueue.main.async {
             self.AddSuccessNotificationLabel.isHidden = true
             self.TopicListSongTableView.isHidden = true
-            // UIView usage
+            
         }
-        
-        /*activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.style = UIActivityIndicatorView.Style.gray
-        LoadingView.addSubview(activityIndicator)
-        
-        activityIndicator.startAnimating()
-        UIApplication.shared.beginIgnoringInteractionEvents()*/
         LoadingActivityIndicator.startAnimating()
         
         GetListSongByListId()
@@ -245,22 +220,17 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
                 }
             }
             // Json parse 完後將得到的多個 song_id post 給 server 得到 SongInfo
-            
-            print(jsonListObjectArray)
             ListSetUpBySongId.removeAll()
             for (index, element) in jsonListObjectArray.enumerated()
             {
                 ListSetUpBySongId.append(jsonListObjectArray[index].song_id)
             }
-            print(ListSetUpBySongId)
-            print("start set up topic list song")
             self.SetUpTopicListSong()
-            }.resume()
+        }.resume()
     }
     
     func SetUpTopicListSong()
     {
-        
         let parameters:[String:Any] = ["Idlist": ListSetUpBySongId]  as! [String:Any]
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/song/info") else {return}
@@ -287,15 +257,13 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
                     jsonTopicListObjectArray = try JSONDecoder().decode([SongInfo].self, from: data)
                     print(jsonTopicListObjectArray)
                     
-                    // 以一個array的方式呈現
                     self.SetUpSongs()
                 }
                 catch {
                     print(error)
                 }
             }
-            }.resume()
-        //}
+        }.resume()
     }
     
     func run(after seconds: Int, completion: @escaping () -> Void)
@@ -330,16 +298,12 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
             run(after: time)
             {
             TopicListSong.append(SONG(Id:jsonTopicListObjectArray[index].song_id, Cover: coverPath, Album: jsonTopicListObjectArray[index].song_album, SongName: jsonTopicListObjectArray[index].song_name, Singer: jsonTopicListObjectArray[index].song_artist, Lyrics: jsonTopicListObjectArray[index].song_lyrics ?? "", Category: .Korean, SongPath: coverPath, SongLength: 0))
-            //print(jsonTopicListObjectArray[index].song_photo)
             
                 self.downloadSongCover(url: jsonTopicListObjectArray[index].song_photo, singer: jsonTopicListObjectArray[index].song_artist, album: jsonTopicListObjectArray[index].song_album)
             }
             time = time + 1
-            //self.TopicListSongTableView.reloadData()
         }
         TopicListSong = TopicListSongArray
-        //TopicListSongTableView.reloadData()
-
     }
     var albumPath = String()
     
@@ -394,19 +358,8 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
                 isDownload = 1
                 print("Error downloading file : \(error)")
             }
-            /*DispatchQueue.main.async{
-                self.TopicListSongTableView.reloadData()
-            }*/
             self.SongCount = self.SongCount + 1
             print(self.SongCount)
-            
-            /*if self.SongCount == 12
-            {
-                DispatchQueue.main.async{
-                    self.TopicListSongTableView.isHidden = false
-                    self.LoadingActivityIndicator.stopAnimating()
-                }
-            }*/
         }.resume()
     }
     
@@ -445,7 +398,6 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
             
             DispatchQueue.main.async {
                 self.AddSuccessNotificationLabel.isHidden = false
-                // UIView usage
             }
             
             let parameters:[String:Any] = ["UserId": UserId, "SongId": SongArray[SongArray.count - 1].Id] as! [String:Any]
@@ -516,7 +468,7 @@ class TopicListSongViewController: UIViewController, UITableViewDelegate, UITabl
     
 }
 
-
+// 主題歌單 - 曲風
 class GenreListSongViewController: ViewController, UITableViewDelegate, UITableViewDataSource
 {
     var GenreId:Int = 0
@@ -547,21 +499,19 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
         
         LoadingActivityIndicator.startAnimating()
         
-            GenreNameLabel.text = GenreName
+        GenreNameLabel.text = GenreName
         DispatchQueue.main.async {
             self.GenreListSongTableView.isHidden = true
             self.AddSuccessNotificationLabel.isHidden = true
         }
        
-            GenreListSongTableView?.delegate = self
-            GenreListSongTableView?.dataSource = self
+        GenreListSongTableView?.delegate = self
+        GenreListSongTableView?.dataSource = self
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
-    self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-    
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
-    
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
         
@@ -601,11 +551,9 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
                     print(error)
                 }
             }
-            
         }.resume()
-        
-        
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         run(after: 1)
         {
@@ -652,7 +600,6 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
                                 self.jsonObjectGenreListArray[index].song_lyrics = "目前無歌詞"
                             }
                             self.GenreListSongArray.append(SONG(Id: self.jsonObjectGenreListArray[index].song_id, Cover: coverPath, Album: self.jsonObjectGenreListArray[index].song_album, SongName: self.jsonObjectGenreListArray[index].song_name, Singer: self.jsonObjectGenreListArray[index].song_artist, Lyrics: self.jsonObjectGenreListArray[index].song_lyrics ?? "", Category: .Korean, SongPath: coverPath, SongLength: 0))
-                            //downloadSongCover(url: jsonObjectArray[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
                         }
                         print(self.GenreListSongArray.count)
                     }
@@ -661,68 +608,33 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
                     }
                 }
                 
-                //if(RecommendListLoad == false)
-                //{
-                    // Dance
-                    if self.GenreId == 4
+                if self.GenreId == 4
+                {
+                    self.run(after: 10)
                     {
-                        self.run(after: 10)
-                        {
-                            self.GenreListSongTableView.reloadData()
-                            DispatchQueue.main.async {
-                                self.LoadingActivityIndicator.stopAnimating()
-                                self.LoadingActivityIndicator.isHidden = true
-                                self.GenreListSongTableView.isHidden = false
-                            }
+                        self.GenreListSongTableView.reloadData()
+                        DispatchQueue.main.async {
+                            self.LoadingActivityIndicator.stopAnimating()
+                            self.LoadingActivityIndicator.isHidden = true
+                            self.GenreListSongTableView.isHidden = false
                         }
                     }
-                    else
+                }
+                else
+                {
+                    self.run(after: 6)
                     {
-                        self.run(after: 6)
-                        {
-                            self.GenreListSongTableView.reloadData()
-                            DispatchQueue.main.async {
-                                self.LoadingActivityIndicator.stopAnimating()
-                                self.LoadingActivityIndicator.isHidden = true
-                                self.GenreListSongTableView.isHidden = false
-                            }
+                        self.GenreListSongTableView.reloadData()
+                        DispatchQueue.main.async {
+                            self.LoadingActivityIndicator.stopAnimating()
+                            self.LoadingActivityIndicator.isHidden = true
+                            self.GenreListSongTableView.isHidden = false
                         }
                     }
-                //}
+                }
             }.resume()
         }
     }
-    
-    /*override func viewDidAppear(_ animated: Bool) {
-        if(RecommendListLoad == false)
-        {
-            // Dance
-            if GenreId == 4
-            {
-                run(after: 10)
-                {
-                    self.GenreListSongTableView.reloadData()
-                    DispatchQueue.main.async {
-                        self.LoadingActivityIndicator.stopAnimating()
-                        self.LoadingActivityIndicator.isHidden = true
-                        self.GenreListSongTableView.isHidden = false
-                    }
-                }
-            }
-            else
-            {
-                run(after: 6)
-                {
-                    self.GenreListSongTableView.reloadData()
-                    DispatchQueue.main.async {
-                        self.LoadingActivityIndicator.stopAnimating()
-                        self.LoadingActivityIndicator.isHidden = true
-                        self.GenreListSongTableView.isHidden = false
-                    }
-                }
-            }
-        }
-    }*/
     
     @objc func connected(sender: UIButton)
     {
@@ -747,7 +659,6 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
             
             DispatchQueue.main.async {
                 self.AddSuccessNotificationLabel.isHidden = false
-                // UIView usage
             }
             
             let parameters:[String:Any] = ["UserId": UserId, "SongId": SongArray[SongArray.count - 1].Id] as! [String:Any]
@@ -796,13 +707,6 @@ class GenreListSongViewController: ViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        /*let cell = GenreListSongTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! TopicListSongTableViewCell
-        
-        let coverPath = GenreListSongArray[indexPath.row].Cover.path
-        cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
-        cell.SongNameCell.text = GenreListSongArray[indexPath.row].SongName
-        cell.SingerCell.text = GenreListSongArray[indexPath.row].Singer*/
-        
         let cell = GenreListSongTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! TopicListSongTableViewCell
         
         let coverPath = GenreListSongArray[indexPath.row].Cover.path

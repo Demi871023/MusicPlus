@@ -8,18 +8,21 @@
 
 import Foundation
 import Charts
-//var jsonObjectArray = [SongInfo]()
+
 var SongData = [SongInfomation]()
 var SongChooseTop3Array = [SongChooseTop3]()
 var jsongObjectRankData = [Top3type]()
 
+// 排行榜折線圖時間軸
 let tmpYaris:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
 
+// Top 3 Struct
 struct Top3type: Decodable{
     let song_name: String
     let rank: [Int]
 }
 
+// Top 50 Struct
 struct SongInfomation: Decodable{
     let rank_id: Int
     let song_id: Int
@@ -30,6 +33,7 @@ struct SongInfomation: Decodable{
     var song_lyrics: String?
 }
 
+// 華語排行榜
 class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var Line1SongNameLabel: UILabel!
@@ -79,16 +83,15 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     var Rank10LineArray:[ChartDataEntry] = []
     
     var RankData:[Top3type] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         DispatchQueue.main.async(){
-            //print(self.KSongRankArray.count)
             self.SongNotInDBLabel.isHidden = true
         }
         
         self.navigationController?.isNavigationBarHidden = false
-        //self.navigationController?.navigationBar.topItem?.title = "華語排行榜"
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
@@ -175,7 +178,8 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                         SongChooseTop3Array.append(SongChooseTop3(LineId: index, SongName: jsongObjectRankData[index].song_name, Grade: GradeTotal, RankNow: RankNowInt))
                     }
                 }
-                catch {
+                catch
+                {
                     print(error)
                 }
             }
@@ -230,13 +234,9 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                         
                         let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
                         self.CSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Id:SongData[index].song_id, Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Album: SongData[index].song_album ?? "", Lyrics: SongData[index].song_lyrics ?? "" ,Category: .Korean))
-                        
-                        
-                        //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
                     }
                     
                     DispatchQueue.main.async(){
-                        //print(self.KSongRankArray.count)
                         self.CChartTableView.reloadData()
                     }
                 }
@@ -263,7 +263,7 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         {
             for (index, element) in jsongObjectRankData.enumerated()
             {
-                self.CSongRankChartSongName.append(jsongObjectRankData[index].song_name)
+            self.CSongRankChartSongName.append(jsongObjectRankData[index].song_name)
                 for(i, element) in jsongObjectRankData[index].rank.enumerated()
                 {
                     self.RankLineData[index][i] = Double(jsongObjectRankData[index].rank[i])
@@ -285,7 +285,6 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
     {
         //設置整個Chart的面板
-        //LineKChartView.frame = CGRect(x:0, y:20, width: self.view.bounds.width-5, height: 250) // 設置整個曲線圖位置與大小
         LineCChartView.leftAxis.axisMinimum = 0
         LineCChartView.leftAxis.labelCount = 10 // y 軸展示 10 個分點
         LineCChartView.xAxis.labelCount = 24
@@ -293,14 +292,10 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         LineCChartView.doubleTapToZoomEnabled = false; //不允許雙雙擊縮放
         LineCChartView.leftAxis.enabled = false; //不顯示橫條線
         LineCChartView.xAxis.enabled = true; //顯示直條線
-        //LineKChartView.xAxis.labelHeight = 50
         LineCChartView.xAxis.labelPosition = .bottom;
         LineCChartView.xAxis.labelTextColor = UIColor(red:255/255, green: 255/255, blue:255/255, alpha: 1)
-        
         LineCChartView.rightAxis.enabled = false; //不顯示橫條線
         
-        // data 用來放整個Chart中的每一條折線數據
-        //let data = LineChartData()
         
         // 每一條折線各自放置
         
@@ -315,123 +310,114 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         basicdataset.drawValuesEnabled = false
         data.addDataSet(basicdataset)
         
-        // Set Up 每一條折線
-        // 第一名 綠色
+        // Set Up 第一名折線的資料
         for i in 0..<name.count{
             let y = values1[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values1[i])
             Rank1LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "HWASA - TWIT")
-        //linedataset.drawFilledEnabled = true;
-        //linedataset.fillAlpha = 0.5;
+        // Set Up 第一名折線的樣式
+        let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "")
         Rank1LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)]
-        //linedataset.circleHoleRadius = 1
+        Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)] // 綠色
         Rank1LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank1LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank1LineDataSet.drawValuesEnabled = false;
-        
         data.addDataSet(Rank1LineDataSet)
         
-        // 第二名 藍色
+        // Set Up 第二名折線的資料
         for i in 0..<name.count{
             let y = values2[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values2[i])
             Rank2LineArray.append(data)
         }
-        let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "Whee In - Good Bye")
+        // Set Up 第二名折線的樣式
+        let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "")
         Rank2LineDataSet.lineWidth = 3
-        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
+        Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)] // 藍色
         Rank2LineDataSet.circleRadius = 0
         Rank2LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank2LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank2LineDataSet)
         
         
-        // 第三名 粉色
+        // Set Up 第三名折線的資料
         for i in 0..<name.count{
             let y = values3[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values3[i])
             Rank3LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第三名折線的樣式
+        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "")
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank3LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank3LineDataSet)
         
-        // 第4名 螢色
+        // Set Up 第四名折線的資料
         for i in 0..<name.count{
             let y = values4[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
             Rank4LineArray.append(data)
         }
-        //第一條折線名稱
+        // Set Up 第四名折線的樣式
         let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
-        
         Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 螢色
         Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
         Rank4LineDataSet.drawValuesEnabled = false;
         Rank4LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank4LineDataSet)
         
-        // 第5名 藍綠色
+        // Set Up 第五名折線的資料
         for i in 0..<name.count{
             let y = values5[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
             Rank5LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第五名折線的樣式
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "")
         Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 藍綠色
         Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank5LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank5LineDataSet)
         
-        // 第6名 紫色
+        // Set Up 第六名折線的資料
         for i in 0..<name.count{
             let y = values6[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
             Rank6LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
+        // Set Up 第六名折線的樣式
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "")
         
         Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank6LineDataSet.colors = [UIColor(red:156/255, green: 101/255, blue:255/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank6LineDataSet.colors = [UIColor(red:156/255, green: 101/255, blue:255/255, alpha: 1)] // 紫色
         Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank6LineDataSet.drawValuesEnabled = false;
         Rank6LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank6LineDataSet)
         
+        // 將六條曲線加至圖表上
         self.LineCChartView.data = data
         var axisFormatDelgate: IAxisValueFormatter?
         LineCChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineCChartView.xAxis.granularity = 1
     }
     
+    // 點擊愛心時會抓 RowIndex ，並至個人歌單
     @objc func connected(sender: UIButton)
     {
         var isExistInMyList:Bool = false
@@ -442,12 +428,10 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         print(CSongRankArray[ClickButtonRow].SongName)
         print(CSongRankArray.enumerated())
         
-        
         if CSongRankArray[ClickButtonRow].Id == -1
         {
             SongNotInDBLabel.text = "資料庫中無此歌曲"
             DispatchQueue.main.async(){
-                //print(self.KSongRankArray.count)
                 self.SongNotInDBLabel.isHidden = false
             }
             print("資料庫中無此首歌曲")
@@ -470,13 +454,8 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                 
                 SongNotInDBLabel.text = "成功加入此歌曲"
                 DispatchQueue.main.async(){
-                    //print(self.KSongRankArray.count)
                     self.SongNotInDBLabel.isHidden = false
                 }
-                /*DispatchQueue.main.async {
-                 self.AddSuccessNotificationLabel.isHidden = false
-                 // UIView usage
-                 }*/
                 
                 let parameters:[String:Any] = ["UserId": UserId, "SongId": CSongRankArray[ClickButtonRow].Id] as! [String:Any]
                 
@@ -512,7 +491,6 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             {
                 SongNotInDBLabel.text = "此歌曲已經存在於個人歌單中"
                 DispatchQueue.main.async(){
-                    //print(self.KSongRankArray.count)
                     self.SongNotInDBLabel.isHidden = false
                 }
                 print("此歌曲已經新增至個人歌單中")
@@ -520,14 +498,15 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         }
     }
     
+    // Table 設置 numberOfSection
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+    // Table 設置 tableView numberOfRowsInSection -> Table 的列數
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CSongRankArray.count
     }
-    
+    // Table 設置 tableView cellForRowAt -> Table 每一列的 cell 上的資訊
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = CChartTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! CSongsRankTableViewCell
         
@@ -535,7 +514,6 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         
         let coverPath = CSongRankArray[indexPath.row].Cover.path
         cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
-        //cell.CoverCell.image = UIImage(named: CSongRankArray[indexPath.row].Cover.path)
         cell.SongNameCell.text = CSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = CSongRankArray[indexPath.row].Singer
         
@@ -544,16 +522,13 @@ class CChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         
         return cell
     }
-    
+    // Table 設置 tableView heightForRowAt -> Table 的列高
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row + 1)
-    }
 }
 
+// 韓語排行榜
 class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var Line1SongNameLabel: UILabel!
@@ -577,7 +552,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     let data = LineChartData()
     
     var basicData:Array<Double> = []
-    var RankLineData = [[Double]](repeating: [Double](repeating: 0, count: 24), count: 10) // Line Chart 中的 數據點
+    var RankLineData = [[Double]](repeating: [Double](repeating: 0, count: 24), count: 10)
     
     var Rank1LineDataSet = LineChartDataSet()
     var Rank2LineDataSet = LineChartDataSet()
@@ -589,7 +564,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     var Rank8LineDataSet = LineChartDataSet()
     var Rank9LineDataSet = LineChartDataSet()
     var Rank10LineDataSet = LineChartDataSet()
-    
     
     var basicArray:[ChartDataEntry] = []
     var Rank1LineArray:[ChartDataEntry] = []
@@ -634,9 +608,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
                         
                         let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
                         self.KSongRankArray.append(SongRank(Rank: String(SongData[index].rank_id), Id: SongData[index].song_id,Cover: coverPath, SongName: SongData[index].song_name, Singer: SongData[index].song_artist ?? "", Album: SongData[index].song_album ?? "", Lyrics: SongData[index].song_lyrics ?? "" , Category: .Korean))
-                        
-                        
-                        //downloadSongCover(url:SongData[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
                     }
                     
                     DispatchQueue.main.async(){
@@ -701,7 +672,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
             }catch CocoaError.fileReadNoSuchFileError {
                 print("No such file")
             } catch {
-                // other errors
                 isDownload = 1
                 print("Error downloading file : \(error)")
             }
@@ -722,10 +692,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         
         run(after: 1)
         {
-            print("===========")
-            print(SongChooseTop3Array)
-            print("===========")
-            
             for (index, element) in jsongObjectRankData.enumerated()
             {
             self.KSongRankChartSongName.append(jsongObjectRankData[index].song_name)
@@ -751,12 +717,10 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         super.viewDidLoad()
         
         DispatchQueue.main.async(){
-            //print(self.KSongRankArray.count)
             self.SongNotInDBLabel.isHidden = true
         }
         
         self.navigationController?.isNavigationBarHidden = false
-        //self.navigationController?.navigationBar.topItem?.title = "韓語排行榜"
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
@@ -871,8 +835,7 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
     {
-        //設置整個Chart的面板
-        //LineKChartView.frame = CGRect(x:0, y:20, width: self.view.bounds.width-5, height: 250) // 設置整個曲線圖位置與大小
+        // 設置整個Chart的面板
         LineKChartView.leftAxis.axisMinimum = 0
         LineKChartView.leftAxis.labelCount = 10 // y 軸展示 10 個分點
         LineKChartView.xAxis.labelCount = 24
@@ -880,16 +843,9 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         LineKChartView.doubleTapToZoomEnabled = false; //不允許雙雙擊縮放
         LineKChartView.leftAxis.enabled = false; //不顯示橫條線
         LineKChartView.xAxis.enabled = true; //顯示直條線
-        //LineKChartView.xAxis.labelHeight = 50
         LineKChartView.xAxis.labelPosition = .bottom;
         LineKChartView.xAxis.labelTextColor = UIColor(red:255/255, green: 255/255, blue:255/255, alpha: 1)
-        
         LineKChartView.rightAxis.enabled = false; //不顯示橫條線
-        
-        // data 用來放整個Chart中的每一條折線數據
-        //let data = LineChartData()
-        
-        // 每一條折線各自放置
         
         // 利用透明的性質，Set Up Chart上的24個分點
         for i in 0..<name.count{
@@ -902,38 +858,32 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         basicdataset.drawValuesEnabled = false
         data.addDataSet(basicdataset)
         
-        // Set Up 每一條折線
-        // 第一名 綠色
+        // Set Up 第一名折線的資料
         for i in 0..<name.count{
             let y = values1[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values1[i])
             Rank1LineArray.append(data)
         }
-        //第一條折線名稱
-        
-        let Rank1LineDataSet = LineChartDataSet(entries: Rank1LineArray, label: "Psycho")
-        
-        //let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "HWASA - TWIT")
-        //linedataset.drawFilledEnabled = true;
-        //linedataset.fillAlpha = 0.5;
+        // Set Up 第一名折線的樣式
+        let Rank1LineDataSet = LineChartDataSet(entries: Rank1LineArray, label: "")
         Rank1LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)]
-        //linedataset.circleHoleRadius = 1
         Rank1LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank1LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank1LineDataSet.drawValuesEnabled = false;
         Rank1LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank1LineDataSet)
         
-        // 第二名 藍色
+        // Set Up 第二名折線的資料
         for i in 0..<name.count{
             let y = values2[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values2[i])
             Rank2LineArray.append(data)
         }
-        let Rank2LineDataSet = LineChartDataSet.init(entries: Rank2LineArray, label: "METEOR")
+        // Set Up 第二名折線的樣式
+        let Rank2LineDataSet = LineChartDataSet.init(entries: Rank2LineArray, label: "")
         Rank2LineDataSet.lineWidth = 3
         Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
         Rank2LineDataSet.circleRadius = 0
@@ -942,38 +892,34 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank2LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank2LineDataSet)
         
-        
-        // 第三名 粉色
+        // Set Up 第三名折線的資料
         for i in 0..<name.count{
             let y = values3[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values3[i])
             Rank3LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "다시는 사랑하지 않고, 이별에 아파하기 싫어")
-        
+        // Set Up 第三名折線的樣式
+        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "")
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank3LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank3LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank3LineDataSet.drawValuesEnabled = false;
         Rank3LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank3LineDataSet)
         
-        // 第4名 螢色
+        // Set Up 第四名折線的資料
         for i in 0..<name.count{
             let y = values4[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
             Rank4LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
-        
+        // Set Up 第四名折線的樣式
+        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "")
         Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：螢色
         //linedataset.circleHoleRadius = 1
         Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
@@ -981,89 +927,80 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank4LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank4LineDataSet)
         
-        // 第5名 藍綠色
+        // Set Up 第五名折線的資料
         for i in 0..<name.count{
             let y = values5[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
             Rank5LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第五名折線的樣式
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "")
         Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：藍綠色
         Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank5LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank5LineDataSet)
         
-        // 第6名 粉色
+        // Set Up 第六名折線的資料
         for i in 0..<name.count{
             let y = values6[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
             Rank6LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第六名折線的樣式
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "")
         Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank6LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank6LineDataSet.drawValuesEnabled = false;
         Rank6LineDataSet.mode = .horizontalBezier
         data.addDataSet(Rank6LineDataSet)
         
-        // 第7名 粉色
+        // Set Up 第七名折線的資料
         for i in 0..<name.count{
             let y = values7[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values7[i])
             Rank7LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank7LineDataSet = LineChartDataSet(entries:Rank7LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第七名折線的樣式
+        let Rank7LineDataSet = LineChartDataSet(entries:Rank7LineArray, label: "")
         Rank7LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank7LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank7LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank7LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank7LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank7LineDataSet)
         
-        // 第8名 粉色
+        // Set Up 第八名折線的資料
         for i in 0..<name.count{
             let y = values8[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values8[i])
             Rank8LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank8LineDataSet = LineChartDataSet(entries:Rank8LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第八名折線的樣式
+        let Rank8LineDataSet = LineChartDataSet(entries:Rank8LineArray, label: "")
         Rank8LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank8LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank8LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank8LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank8LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank8LineDataSet)
         
-        // 第9名 粉色
+        // Set Up 第九名折線的資料
         for i in 0..<name.count{
             let y = values9[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values9[i])
             Rank9LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank9LineDataSet = LineChartDataSet(entries:Rank9LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第九名折線的樣式
+        let Rank9LineDataSet = LineChartDataSet(entries:Rank9LineArray, label: "")
         Rank9LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank9LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
         //linedataset.circleHoleRadius = 1
@@ -1072,19 +1009,17 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         Rank9LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank9LineDataSet)
         
-        // 第10名 粉色
+        // Set Up 第十名折線的資料
         for i in 0..<name.count{
             let y = values10[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values10[i])
             Rank10LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank10LineDataSet = LineChartDataSet(entries:Rank10LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第十名折線的樣式
+        let Rank10LineDataSet = LineChartDataSet(entries:Rank10LineArray, label: "")
         Rank10LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank10LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 0.4)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
         Rank10LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank10LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank10LineDataSet.drawValuesEnabled = false;
@@ -1094,8 +1029,6 @@ class KChart:UIViewController, UITableViewDelegate, UITableViewDataSource{
         var axisFormatDelgate: IAxisValueFormatter?
         LineKChartView.xAxis.valueFormatter = IndexAxisValueFormatter(values: yarisTime)
         LineKChartView.xAxis.granularity = 1
-        
-        
         LineKChartView.notifyDataSetChanged()
 
     }
@@ -1365,17 +1298,13 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
         DispatchQueue.main.async(){
-            //print(self.KSongRankArray.count)
             self.SongNotInDBLabel.isHidden = true
         }
         
-        
         // 設置導覽列
-    self.navigationController?.isNavigationBarHidden = false
-        //self.navigationController?.navigationBar.topItem?.title = "西洋排行榜"
+        self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
@@ -1485,9 +1414,7 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     func SetUpLineKChart(name:[String], basic:[Double], values1:[Double], values2:[Double], values3:[Double], values4:[Double], values5:[Double], values6:[Double], values7:[Double], values8:[Double], values9:[Double], values10:[Double])
     {
         
-        
-        //設置整個Chart的面板
-        //LineKChartView.frame = CGRect(x:0, y:20, width: self.view.bounds.width-5, height: 250) // 設置整個曲線圖位置與大小
+        // 設置整個Chart的面板
         LineWChartView.leftAxis.axisMinimum = 0
         LineWChartView.leftAxis.labelCount = 10 // y 軸展示 10 個分點
         LineWChartView.xAxis.labelCount = 24
@@ -1495,16 +1422,11 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         LineWChartView.doubleTapToZoomEnabled = false; //不允許雙雙擊縮放
         LineWChartView.leftAxis.enabled = false; //不顯示橫條線
         LineWChartView.xAxis.enabled = true; //顯示直條線
-        //LineKChartView.xAxis.labelHeight = 50
         LineWChartView.xAxis.labelPosition = .bottom;
         LineWChartView.xAxis.labelTextColor = UIColor(red:255/255, green: 255/255, blue:255/255, alpha: 1)
         
         LineWChartView.rightAxis.enabled = false; //不顯示橫條線
         
-        // data 用來放整個Chart中的每一條折線數據
-        //let data = LineChartData()
-        
-        // 每一條折線各自放置
         // 利用透明的性質，Set Up Chart上的24個分點
         for i in 0..<name.count{
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:basic[i])
@@ -1516,34 +1438,30 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         basicdataset.drawValuesEnabled = false
         data.addDataSet(basicdataset)
         
-        // Set Up 每一條折線
-        // 第一名 綠色
+        // Set Up 第一名折線的資料
         for i in 0..<name.count{
             let y = values1[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values1[i])
             Rank1LineArray.append(data)
         }
-        //第一條折線名稱
+        // Set Up 第一名折線的樣式
         let Rank1LineDataSet =  LineChartDataSet(entries:Rank1LineArray, label: "HWASA - TWIT")
-        //linedataset.drawFilledEnabled = true;
-        //linedataset.fillAlpha = 0.5;
         Rank1LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank1LineDataSet.colors = [UIColor(red:106/255, green: 189/255, blue:102/255, alpha: 1)]
-        //linedataset.circleHoleRadius = 1
         Rank1LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank1LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 0)]
         Rank1LineDataSet.drawValuesEnabled = false;
-        
         data.addDataSet(Rank1LineDataSet)
         
-        // 第二名 藍色
+        // Set Up 第二名折線的資料
         for i in 0..<name.count{
             let y = values2[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values2[i])
             Rank2LineArray.append(data)
         }
+        // Set Up 第二名折線的資料
         let Rank2LineDataSet = LineChartDataSet(entries: Rank2LineArray, label: "Whee In - Good Bye")
         Rank2LineDataSet.lineWidth = 3
         Rank2LineDataSet.colors = [UIColor(red:4/255, green: 173/255, blue:223/255, alpha: 1)]
@@ -1552,17 +1470,15 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         Rank2LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank2LineDataSet)
         
-        
-        // 第三名 粉色
+        // Set Up 第三名折線的資料
         for i in 0..<name.count{
             let y = values3[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values3[i])
             Rank3LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第三名折線的資料
+        let Rank3LineDataSet = LineChartDataSet(entries:Rank3LineArray, label: "")
         Rank3LineDataSet.lineWidth = 3 // 設置折線寬度
         Rank3LineDataSet.colors = [UIColor(red:255/255, green: 118/255, blue:166/255, alpha: 1)] // 設置折線顏色：粉色
         //linedataset.circleHoleRadius = 1
@@ -1571,55 +1487,49 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         Rank3LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank3LineDataSet)
         
-        // 第四名 螢黃
+        // Set Up 第四名折線的資料
         for i in 0..<name.count{
             let y = values4[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values4[i])
             Rank4LineArray.append(data)
         }
-        
-        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "아마두")
-        
+        // Set Up 第四名折線的資料
+        let Rank4LineDataSet = LineChartDataSet(entries:Rank4LineArray, label: "")
         Rank4LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank4LineDataSet.colors = [UIColor(red:246/255, green: 237/255, blue:49/255, alpha: 1)] // 設置折線顏色：螢色
         Rank4LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank4LineDataSet.circleColors = [UIColor(red:118/155, green: 81/255, blue:46/255, alpha: 0)]
         Rank4LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank4LineDataSet)
         
-        // 第5名 藍綠色
+        // Set Up 第五名折線的資料
         for i in 0..<name.count{
             let y = values5[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values5[i])
             Rank5LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第五名折線的資料
+        let Rank5LineDataSet = LineChartDataSet(entries:Rank5LineArray, label: "")
         Rank5LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank5LineDataSet.colors = [UIColor(red:156/255, green: 255/255, blue:220/255, alpha: 1)] // 設置折線顏色：藍綠色
         Rank5LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank5LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank5LineDataSet.drawValuesEnabled = false;
         data.addDataSet(Rank5LineDataSet)
         
-        // 第6名 粉色
+        // Set Up 第六名折線的資料
         for i in 0..<name.count{
             let y = values6[i]
             if y == 0 {continue}
             let data:ChartDataEntry = ChartDataEntry(x: Double(i), y:values6[i])
             Rank6LineArray.append(data)
         }
-        //第一條折線名稱
-        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "HWASA - TWIT")
-        
+        // Set Up 第六名折線的資料
+        let Rank6LineDataSet = LineChartDataSet(entries:Rank6LineArray, label: "")
         Rank6LineDataSet.lineWidth = 3 // 設置折線寬度
-        Rank6LineDataSet.colors = [UIColor(red:255/255, green: 178/255, blue:147/255, alpha: 1)] // 設置折線顏色：粉色
-        //linedataset.circleHoleRadius = 1
+        Rank6LineDataSet.colors = [UIColor(red:255/255, green: 178/255, blue:147/255, alpha: 1)] // 設置折線顏色：紫色
         Rank6LineDataSet.circleRadius = 0 // 設置折線上節點圓半徑
         Rank6LineDataSet.circleColors = [UIColor(red:255/155, green: 255/255, blue:255/255, alpha: 1)]
         Rank6LineDataSet.drawValuesEnabled = false;
@@ -1646,7 +1556,6 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         {
             SongNotInDBLabel.text = "資料庫中無此歌曲"
             DispatchQueue.main.async(){
-                //print(self.KSongRankArray.count)
                 self.SongNotInDBLabel.isHidden = false
             }
             print("資料庫中無此首歌曲")
@@ -1666,19 +1575,12 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
             {
                 SongSearchArray.append(SONG(Id:WSongRankArray[ClickButtonRow].Id, Cover: WSongRankArray[ClickButtonRow].Cover, Album: WSongRankArray[ClickButtonRow].Album, SongName: WSongRankArray[ClickButtonRow].SongName, Singer: WSongRankArray[ClickButtonRow].Singer, Lyrics: WSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
                 
-                
-                
                 SongArray.append(SONG(Id:WSongRankArray[ClickButtonRow].Id, Cover: WSongRankArray[ClickButtonRow].Cover, Album: WSongRankArray[ClickButtonRow].Album, SongName: WSongRankArray[ClickButtonRow].SongName, Singer: WSongRankArray[ClickButtonRow].Singer, Lyrics: WSongRankArray[ClickButtonRow].Lyrics ?? "", Category: .Korean, SongPath: documentDirectory, SongLength: 23))
                 
                 SongNotInDBLabel.text = "成功加入此歌曲"
                 DispatchQueue.main.async(){
-                    //print(self.KSongRankArray.count)
                     self.SongNotInDBLabel.isHidden = false
                 }
-                /*DispatchQueue.main.async {
-                 self.AddSuccessNotificationLabel.isHidden = false
-                 // UIView usage
-                 }*/
                 
                 let parameters:[String:Any] = ["UserId": UserId, "SongId": WSongRankArray[ClickButtonRow].Id] as! [String:Any]
                 
@@ -1728,7 +1630,6 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return WSongRankArray.count
-        //return 50
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = WChartTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! WSongsRankTableViewCell
@@ -1736,7 +1637,6 @@ class ＷChart:UIViewController , UITableViewDelegate, UITableViewDataSource{
         cell.RankCell.image = UIImage(named: "Rank" + WSongRankArray[indexPath.row].Rank)
         let coverPath = WSongRankArray[indexPath.row].Cover.path
         cell.CoverCell.image = UIImage(contentsOfFile: coverPath)
-        //cell.CoverCell.image = UIImage(named: WSongRankArray[indexPath.row].Cover.path)
         cell.SongNameCell.text = WSongRankArray[indexPath.row].SongName
         cell .SingerCell.text = WSongRankArray[indexPath.row].Singer
         

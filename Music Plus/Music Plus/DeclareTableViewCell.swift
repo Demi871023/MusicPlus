@@ -8,7 +8,7 @@
 
 import UIKit
 
-// For RankViewController
+// For KChart Class
 class KSongsRankTableViewCell: UITableViewCell {
     
     @IBOutlet weak var RankCell: UIImageView!
@@ -26,7 +26,7 @@ class KSongsRankTableViewCell: UITableViewCell {
     }
     
 }
-
+// For CChart Class
 class CSongsRankTableViewCell: UITableViewCell {
     
     @IBOutlet weak var RankCell: UIImageView!
@@ -43,7 +43,7 @@ class CSongsRankTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 }
-
+// For WChart Class
 class WSongsRankTableViewCell: UITableViewCell {
     
     @IBOutlet weak var RankCell: UIImageView!
@@ -60,7 +60,7 @@ class WSongsRankTableViewCell: UITableViewCell {
     }
 }
 
-
+// For ListPVCPersonal Class
 class SongsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var CoverCell: UIImageView!
@@ -83,7 +83,6 @@ class SongsTableViewCell: UITableViewCell {
 class MyPageTableViewCell: UITableViewCell {
     
     @IBOutlet weak var MyPageFuncIconCell: UIImageView!
-    
     @IBOutlet weak var MyPageFuncLabelCell: UILabel!
     
     override func awakeFromNib() {
@@ -98,12 +97,12 @@ class MyPageTableViewCell: UITableViewCell {
     }
 }
 
+//For TopicListSongViewController Class & GenreListSongViewController Class
 class TopicListSongTableViewCell:UITableViewCell{
     
     @IBOutlet weak var CoverCell: UIImageView!
     @IBOutlet weak var SongNameCell: UILabel!
     @IBOutlet weak var SingerCell: UILabel!
-    //@IBOutlet weak var LikeHeartCell: UIImageView!
     @IBOutlet weak var LikeHeartButtonCell: UIButton!
     
     override func awakeFromNib() {
@@ -113,12 +112,11 @@ class TopicListSongTableViewCell:UITableViewCell{
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
         // Configure the view for the selected state
     }
-    
 }
 
+// For HomePVCFind Class
 class SongFindTableViewCell:UITableViewCell{
     
     @IBOutlet weak var CoverCell: UIImageView!
@@ -133,15 +131,14 @@ class SongFindTableViewCell:UITableViewCell{
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
         // Configure the view for the selected state
     }
 }
 
+// For HomePVCRecord Class
 class SongFindRecordCell: UITableViewCell{
     
     @IBOutlet weak var RecordStringCell: UILabel!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -149,11 +146,11 @@ class SongFindRecordCell: UITableViewCell{
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
         // Configure the view for the selected state
     }
 }
 
+// For HomePVCRecommend Class
 class PersonalRecommendCell: UITableViewCell{
     
     @IBOutlet weak var CoverCell: UIImageView!
@@ -168,14 +165,11 @@ class PersonalRecommendCell: UITableViewCell{
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
         // Configure the view for the selected state
     }
-
 }
 
 class ThemeListCollectionViewCell:UICollectionViewCell {
-    
     @IBOutlet weak var ThemeListButton: UIButton!
     
 }

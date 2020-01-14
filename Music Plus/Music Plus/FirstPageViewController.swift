@@ -31,21 +31,6 @@ class FirstPageViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
-    //let MyPageList = ["Downloading Song", "My Favorite"]
-    
-    /*public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    {
-        return MyPageList.count
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        let cell = UITableViewCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "cell")
-        cell.textLabel?.text = MyPageList[indexPath.row]
-        
-        return cell
-        
-    }*/
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return MyPageFuncArray.count

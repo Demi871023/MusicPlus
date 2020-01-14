@@ -37,8 +37,8 @@ protocol SelectedCollectionItemDelegate {
     func selectedCollectionItem(index:Int)
 }
 
+// ListPage 旗下有 ListPVCPersonal、ListPVCTheme
 class ListPage: UIViewController{
-    
     
     @IBOutlet weak var PersonalListButton: UIButton!
     @IBOutlet weak var ThemeListButton: UIButton!
@@ -47,8 +47,6 @@ class ListPage: UIViewController{
         super.viewDidLoad()
         PersonalListButton.setTitleColor(UIColor.orange, for: .normal)
         PersonalListButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
-        //GetSongName()
-        // Do any additional setup after loading the view.
     }
     
     var CenterPVC: ListPVC!
@@ -63,7 +61,6 @@ class ListPage: UIViewController{
             }
         }
     }
-    
     
     @IBAction func ListPageFirst(_ sender: Any) {
         CenterPVC.setViewControllerFromIndex(index: 0)
@@ -82,12 +79,10 @@ class ListPage: UIViewController{
     }
 }
 
-
+// 個人歌單頁面
 class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate{
-    
-    
+
     var refresher: UIRefreshControl!
-    
     
     @IBOutlet weak var MusicListSearchBar: UISearchBar!
     @IBOutlet weak var MusicListTableView: UITableView!
@@ -104,12 +99,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     var delegate: FetchSelectRow!
     
-    //var song:[String] = []
-    //var SongArray = [SONG]()
-    //var SongSearchArray = [SONG]()
-    //var audioPlayer2 = AVAudioPlayer()
-    //var jsonObjectArray = [SongInfo]() // Json Response
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -118,18 +107,14 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         MusicListTableView?.estimatedRowHeight = 0
         MusicListTableView?.delegate = self
         MusicListTableView?.dataSource = self
-        //SetUpSongs()
         SetUpSongSearch()
         
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: "Reload List")
         refresher.addTarget(self, action: #selector(ListPVCPersonal.RefreshList), for: UIControl.Event.valueChanged)
         MusicListTableView.addSubview(refresher)
-        
         NowPlayingPlayButton.isSelected = true
-        
-        
-        //GetSongName()
+
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -156,8 +141,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         
     }
     
-    // Get User List Songs By UserId, response is
-    // "personal_list" = [] string array
     func GetMyMusicListByUserId()
     {
         
@@ -239,31 +222,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
                     print(jsonObjectArray)
                     print("====================")
                     
-                    // 以一個array的方式呈現
-                    //print(self.jsonObjectArray)
-                    
-                    /*
-                     [
-                     Music_Plus.SongInfo
-                     (
-                     song_album: "I am",
-                     song_aritist: "(여자)아이들",
-                     song_id: 1, s
-                     ong_name: "LATATA",
-                     song_photo: https://drive.google.com/uc?id=1p5OBOe_Z2hwUyhTbp7X-kSOwhIPBNzek&authuser=1&export=download
-                     ),
-                     Music_Plus.SongInfo
-                     (
-                     song_album: "I am",
-                     song_aritist: "(여자)아이들",
-                     song_id: 2,
-                     song_name: "달라($$$)",
-                     song_photo: https://drive.google.com/uc?id=1p5OBOe_Z2hwUyhTbp7X-kSOwhIPBNzek&authuser=1&export=download
-                     ),
-                     ......
-                     ]
-                     */
-                    
                     self.SetUpSongs()
                 }
                 catch {
@@ -276,23 +234,17 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
     // Set up Songs Information
     private func SetUpSongs()
     {
-        //let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         SongArray.removeAll()
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        //let coverPath = documentDirectory.appendingPathComponent()
         for (index, element) in jsonObjectArray.enumerated() {
             
             let singer = jsonObjectArray[index].song_artist
             let album = jsonObjectArray[index].song_album
             
             let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-            //let coverPath = mainPath + singer + "/" + album + "/cover.jpg"
-            //let coverImage = UIImage(contentsOfFile: coverPath)
             
             if jsonObjectArray[index].song_lyrics == nil
             {
-                //print(jsonObjectArray[index].song_id)
-                //print(jsonObjectArray[index].song_name)
                 jsonObjectArray[index].song_lyrics = "目前無歌詞"
             }
             
@@ -308,7 +260,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         print(SongHaveNumber)
         DispatchQueue.main.async{
             self.MusicListTableView.reloadData()
-            //AVQueuePlayer(items: [SongArray])
         }
     }
     
@@ -319,7 +270,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
             print(mainPath)
             let singerPath = mainPath + "/" + singer
             
-            //var directoryforsinger:ObjCBool = true
             let singerIsExit = FileManager.default.fileExists(atPath: singerPath)
             
             if singerIsExit == false
@@ -545,7 +495,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
             
             SongSearchArray.remove(at: indexPath.row)
             print(indexPath.row)
-            //MusicListTableView.reloadData()
             
             guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/deletesong") else {return}
             
@@ -639,8 +588,7 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         vc.songindex = selectSongNumber
         SongRemain = Int(audioPlayer.duration)
     }
-    
-    //var songs:[String] = []
+
     var songname = String()
     var session = AVAudioSession()
     
@@ -670,7 +618,6 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
                         try FileManager.default.moveItem(at: tempLocation, to: fullURL)
                         print("saved at \(fullURL) ")
                         self.songname = fullURL.lastPathComponent
-                        //print(self.songname)
                     }
                     else
                     {
@@ -693,10 +640,8 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
                             self.NowPlayingSingerText.text = SongSearchArray[selectSongNumber].Singer
                             
                             self.NowPlayingUIView.isHidden = false
-                            //self.performSegue(withIdentifier: "PlayMusicFromPVCPersonalSegue", sender: self)
                         }
                         SongSearchArray[row].SongLength = audioPlayer.duration
-                        //print(audioPlayer.duration)
                     }
                     catch{
                         
@@ -798,13 +743,9 @@ class ListPVCPersonal: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
         MusicListTableView.reloadData()
      }
-    
-    func plauMusic()
-    {
-        
-    }
 }
 
+// 主題歌單頁面
 class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource
 {
     @IBOutlet weak var ThemeCollectionView: UICollectionView!
@@ -970,7 +911,6 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
             let vc = segue.destination as! TopicListViewController
             vc.TopicId = PostTopicId
             vc.TopicName = PostTopicName
-            //let vc = segue.destination as! FifthPageViewController
         }
         if segue.identifier == "IntoGenreListSegue"
         {
@@ -984,11 +924,7 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
     @IBAction func didUnwindFromTopicPage(_ sender: UIStoryboardSegue)
     {
         guard let NowListeningSongIndex = sender.source as? TopicListViewController else{ return }
-        //let  = NowListeningSongIndex.songindex
-        //print(selectSongNumber)
-        
     }
-    
     
     var ThemeNameArray:[UIImage] = [UIImage(named: "SportThemeIcon")!, UIImage(named: "RelaxThemeIcon")!, UIImage(named: "AutumnThemeIcon")!, UIImage(named: "FeelingThemeIcon")!, UIImage(named: "StudyThemeIcon")!, UIImage(named: "TimeMachineIcon")!]
     
@@ -1029,18 +965,13 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return ThemeNameArray.count
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath as IndexPath) as! ThemeListCollectionViewCell
         cell.ThemeListButton.setImage(ThemeNameArray[indexPath.row], for: .normal)
         
         return cell
     }
-    
-    /*override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
-        let padding: CGFloat = 60
-        let collectionViewSize = ThemeCollectionView.frame.size.height - padding
-        return CGSize(width: 20, height: 300)
-    }*/
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) ->CGSize{
         let padding: CGFloat = 5
@@ -1050,7 +981,6 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        
         let selectedCell:UICollectionViewCell = ThemeCollectionView.cellForItem(at: indexPath)!
         selectedCell.contentView.backgroundColor = UIColor(red: 200/256, green: 105/256, blue: 125/256, alpha: 1)
         
@@ -1058,67 +988,7 @@ class ListPVCTheme: UIViewController, UICollectionViewDelegate, UICollectionView
         print(ThemeCollectionView.indexPath)
         let temp = indexPath.row
         print(temp)
-        
-        /*let parameters:[String:Any] = ["TopicId": itemNum] as! [String:Any]
-        
-        
-        guard let url = URL(string: "http://140.136.149.239:3000/list/topic") else {return}
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
-        
-        request.httpBody = httpBody
-        
-        let session = URLSession.shared
-        session.dataTask(with:  request){
-            (data, response, error) in
-            if let response = response{
-                print(response)
-            }
-            
-            if let data = data{
-                do{
-                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-                    print(json)
-                    /*let json2 = try JSONDecoder().decode(LoginToken.self, from: data)
-                    self.token = json2.Check
-                    print("Check", json2.Check)
-                    if self.token == "Yes"
-                    {
-                        DispatchQueue.main.async(){
-                            self.ErrorImage.isHidden = true
-                            self.ErrorText.isHidden = true
-                            self.performSegue(withIdentifier: "LoginSegue", sender: self)
-                        }
-                        /*self.performSegue(withIdentifier: "LoginSegue", sender: self)*/
-                        
-                        print("correct")
-                    }
-                    else if self.token == "No"
-                    {
-                        /*let alert = UIAlertController(title: "Oops", message: "Your account or password is wrong", preferredStyle: UIAlertController.Style.alert)
-                         alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
-                         self.present(alert, animated: true, completion: nil)*/
-                        DispatchQueue.main.async {
-                            self.ErrorImage.isHidden = false
-                            self.ErrorText.isHidden = false
-                            // UIView usage
-                        }
-                        print("wrong")
-                    }*/
-                }
-                catch{
-                    print(error)
-                }
-            }
-        }.resume()*/
-        
     }
-    
-    
 }
 
 class SONGTEST {

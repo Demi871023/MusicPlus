@@ -18,82 +18,14 @@ var UserFrequency:String = ""
 var UserSongAmount: String = ""
 var UserRemainingTime: String = ""
 
-
 class ViewController: UIViewController{
-    
     var loadcount = 0
-    
-    
-    //@IBOutlet weak var NowPlayingView: UIView!
-    
-    //@IBOutlet weak var NowPlayingCoverImage: UIView!
-    
-    //@IBOutlet weak var NowPlayingSongNameText: UILabel!
-    
-    /*@IBAction func LogoutButtonHandler(_ sender: Any) {
-        DispatchQueue.main.async(){
-            self.performSegue(withIdentifier: "LogoutSegue", sender: self)
-        }
-    }*/
     override func viewDidLoad() {
         super.viewDidLoad()
-        /*DispatchQueue.main.async(){
-            self.NowPlayingView.isHidden = true
-        }*/
-        // Do any additional setup after loading the view.
     }
-    
-    // Sign Up treaty agree buttom
-    /*@IBAction func checkboxTuapped(sender:UIButton)
-    {
-        if(sender.isSelected)
-        {
-            sender.isSelected = false
-        }
-        else
-        {
-            sender.isSelected = true
-        }
-    }*/
-    
-    
-    // PageViewController
-    //var CenterPVC:CenterPageViewController!
-    
-    /*override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        if(segue.identifier == "PVCSegue")
-        {
-            if(segue.destination.isKind(of: CenterPageViewController.self))
-            {
-                CenterPVC = segue.destination as? CenterPageViewController
-            }
-        }
-    }*/
-    
-    // Change Page By Index Number
-    /*@IBAction func FourPageFirst(_ sender: Any) {
-        CenterPVC.setViewControllerFromIndex(index: 0)
-    }
-    
-    @IBAction func FourPageSecond(_ sender: Any) {
-        CenterPVC.setViewControllerFromIndex(index: 1)
-    }
-    
-    @IBAction func FourPageThird(_ sender: Any) {
-        CenterPVC.setViewControllerFromIndex(index: 2)
-    }
-    
-    @IBAction func FourPageFourth(_ sender: Any) {
-        CenterPVC.setViewControllerFromIndex(index: 3)
-    }
-    
-    @IBAction func FourPageFifth(_ sender: Any) {
-        CenterPVC.setViewControllerFromIndex(index: 4)
-    }*/
-    
 }
 
+// 個人資料頁面
 class UserProfileViewController: UIViewController{
     
     var EditStatus:Bool = false
@@ -105,19 +37,14 @@ class UserProfileViewController: UIViewController{
     @IBOutlet weak var RemainingTimeLabel: UILabel!
     @IBOutlet weak var SongAmountLabel: UILabel!
     
-    
     @IBOutlet weak var EditUserProfileButton: UIButton!
-    
     @IBOutlet weak var MyPhotoImage: UIImageView!
     
-    
+    // 利用登入時取得的 UserID，取得此 User 的基本資料
     func GetUserInfo()
     {
-        //let EmailWithSHA256 = EmailTextField.text
-        //let PasswordWithSHA256 = PasswordTextField.text?.sha256String ?? ""
         
         let parameters:[String:Any] = ["UserId": UserId] as! [String:Any]
-        
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/info") else {return}
         
@@ -146,11 +73,6 @@ class UserProfileViewController: UIViewController{
                     UserFrequency = String(json2.frequency) + "次"
                     UserSongAmount = String(json2.song_amount) + "首"
                     UserRemainingTime = String(json2.remaining_time) + "小時"
-                    print(UserRemainingTime)
-                    print(UserSongAmount)
-                    print(UserFrequency)
-                    //print(json2)
-                    
                 }
                 catch{
                     print(error)
@@ -160,6 +82,7 @@ class UserProfileViewController: UIViewController{
         }.resume()
     }
     
+    // 設置使用者資料
     func SetUpUserInfo()
     {
         DispatchQueue.main.async(){
@@ -172,39 +95,26 @@ class UserProfileViewController: UIViewController{
     }
     
     override func viewDidLoad() {
-        
         self.navigationController?.isNavigationBarHidden = false
-        
         self.navigationController?.navigationBar.tintColor = UIColor.orange
         // 讓 navigationController 的背景變成透明
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = UIColor.clear
-        //self.navigationController?.navigationBar.backgroundColor = UIColor.clear
         GetUserInfo()
-        //NickNameTextField.text = "Demi871023"
-        //EmailTextField.text = "demi871023@gmail.com"
         EditUserProfileButton.backgroundColor = UIColor.orange
-        //MyPhotoImage.image = UIImage(named: "MyPhoto")
-       
-        //MyPhotoImage.clipsToBounds = true
-        //MyPhotoImage.layer.cornerRadius = MyPhotoImage.frame.size.width / 2
-        
-        //MyPhotoImage.layer.borderColor = UIColor.orange as! CGColor
-        //MyPhotoImage.layer.borderWidth = 2
         NickNameTextField.isEnabled = false
         EmailTextField.isEnabled = false
         super.viewDidLoad()
-        
-        
-        
     }
     
+    // 當觸碰到空白處，鍵盤就會縮起來
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
+    // 編輯按鈕可更改個人資料
     @IBAction func EditUserProfile()
     {
         print("Editing Now!")
@@ -233,6 +143,7 @@ class UserProfileViewController: UIViewController{
         }
     }
     
+    // 將使用者更改完的資料傳送給後端更新資料庫
     func PostDataUpdateDB()
     {
         let parameters:[String:Any] = ["UserId": UserId, "Email": EmailTextField.text, "Nickname": NickNameTextField.text] as! [String:Any]
@@ -240,7 +151,6 @@ class UserProfileViewController: UIViewController{
         print(UserId)
         print(EmailTextField.text)
         print(NickNameTextField.text)
-        
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/edit") else {return}
         
@@ -263,13 +173,6 @@ class UserProfileViewController: UIViewController{
                 do{
                     let json = try JSONSerialization.jsonObject(with: data, options: [])
                     print(json)
-                    //print(json)
-                    /*let json2 = try JSONDecoder().decode(UserInfo.self, from: data)
-                    UserNickName = json2.user_nickname
-                    UserEmail = json2.user_mail*/
-                    
-                    //print(json2)
-                    
                 }
                 catch{
                     print(error)

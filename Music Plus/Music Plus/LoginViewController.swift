@@ -8,11 +8,6 @@
 
 import Foundation
 import UIKit
-//import CommonCrypto
-
-/*struct SongDownload: Decodable{
-    let song_address: URL
-}*/
 
 var UserId:Int = 0
 
@@ -55,7 +50,6 @@ struct UserInfo: Decodable{
     let song_amount: Int
     let user_mail: String
     let user_nickname: String
-    //let user_photo: String
 }
 
 struct MyList : Decodable {
@@ -74,24 +68,7 @@ struct GenreList: Decodable{
     enum CodingKeys: String, CodingKey {
         case SondList
     }
-    
 }
-
-/*struct MyListSongId{
-    let SongId: [Int]
-}
-
-extension MyListSongId: Decodable{
-    private enum Key: String, CodingKey {
-        case names = "personal_list"
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: Key.self)
-        
-        self.SongId = try container.decode([Int].self, forKey: .names)
-    }
-}*/
 
 // Login Request By POST with User Information
 class LoginViewController: UIViewController{
@@ -110,7 +87,6 @@ class LoginViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //LoginButton.isEnabled = falseErrorText.isHidden = true
         ErrorImage.isHidden = true
         ErrorText.isHidden = true
     }
@@ -124,16 +100,13 @@ class LoginViewController: UIViewController{
         print(sender.text!)
     }
     
-    
-    
-    
+    // 登入按鈕可傳送使用者輸入的帳密給後端與，使其與資料庫比對即登入（密碼使用 HASH）
     @IBAction func LoginWithPost(_ sender: Any) {
         
         let EmailWithSHA256 = EmailTextField.text
         let PasswordWithSHA256 = PasswordTextField.text?.sha256String ?? ""
         
         let parameters:[String:Any] = ["Email": EmailWithSHA256, "Password": PasswordWithSHA256] as! [String:Any]
-        
         
         guard let url = URL(string: "http://140.136.149.239:3000/musicplus/user/login") else {return}
         
@@ -185,80 +158,6 @@ class LoginViewController: UIViewController{
         }.resume()
     }
 }
-
-
-
-// For song/info
-/*
- let parameters:[String:Any] = ["Idlist": [1,2,3,4]]  as! [String:Any]
- 
- 
- guard let url = URL(string: "http://140.136.149.239:3000/song/info") else {return}
- 
- var request = URLRequest(url: url)
- request.httpMethod = "POST"
- request.addValue("application/json", forHTTPHeaderField: "Content-Type")
- 
- guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {return}
- 
- request.httpBody = httpBody
- 
- let session = URLSession.shared
- session.dataTask(with:  request){
- (data, response, error) in
- if let response = response{
- print(response)
- }
- 
- if let data = data{
- do{
- let json = try JSONSerialization.jsonObject(with: data, options: [])
- //var json2 = try JSONDecoder().decode(SongDownload.self, from: data)
- var json2 = try JSONDecoder().decode([SongInfo].self, from: data)
- 
- 
- // 以一個array的方式呈現
- print(json2)
- 
- /*
- [
- Music_Plus.SongInfo
- (
- song_album: "I am",
- song_aritist: "(여자)아이들",
- song_id: 1, s
- ong_name: "LATATA",
- song_photo: https://drive.google.com/uc?id=1p5OBOe_Z2hwUyhTbp7X-kSOwhIPBNzek&authuser=1&export=download
- ),
- Music_Plus.SongInfo
- (
- song_album: "I am",
- song_aritist: "(여자)아이들",
- song_id: 2,
- song_name: "달라($$$)",
- song_photo: https://drive.google.com/uc?id=1p5OBOe_Z2hwUyhTbp7X-kSOwhIPBNzek&authuser=1&export=download
- ),
- ......
- ]
- */
- 
- // 指定 array 中的第幾個 index，並選擇要印出的attribute
- print(json2[0].song_aritist)
- /*
- I am
- */
- //var json3 = try JSONDecoder().decode(SongInfo.self, from: json2)
- //print(json)
- }
- catch{
- print(error)
- }
- }
- }.resume()
- 
- 
- */
-
 
 class LoginNavigationController:UINavigationController{
     override func viewDidLoad() {

@@ -11,6 +11,7 @@ import UIKit
 var MyListSongIdForCheck:Array<Int> = Array()
 
 
+// Center Page View，旗下有歌單頁面（List）、主頁（Home）、搜尋紀錄頁面（HomePVCRecord）
 class CenterPageViewController: UIPageViewController,FetchSelectRow {
     func fetchInt(rowNumber: Int) {
         if isViewLoaded
@@ -30,7 +31,6 @@ class CenterPageViewController: UIPageViewController,FetchSelectRow {
         }
     }
     
-    
     lazy var subViewControllers:[UIViewController] = {
         return [
             UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ListPage") as! ListPage,
@@ -39,6 +39,8 @@ class CenterPageViewController: UIPageViewController,FetchSelectRow {
         ]
     }()
     
+    
+    // 於登入時，就利用登入時取得的 UserID，取得該使用者的個人歌單
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
@@ -90,8 +92,6 @@ class CenterPageViewController: UIPageViewController,FetchSelectRow {
                 }
             }
         }.resume()
-        
-        
     }
     
     func setViewControllerFromIndex(index:Int)
@@ -125,7 +125,7 @@ extension CenterPageViewController: UIPageViewControllerDelegate, UIPageViewCont
 
 
 
-// 主頁（一登入的預設頁面），包含排名、推薦歌曲、找歌
+// 主頁（一登入的預設頁面），包含排名、推薦歌曲
 class HomePVC: UIPageViewController {
     
     lazy var HomesubViewControllers:[UIViewController] = {
@@ -172,29 +172,6 @@ extension HomePVC: UIPageViewControllerDelegate, UIPageViewControllerDataSource{
     }
 }
 
-
-/*class HomePVCRank: UIViewController{
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}
-
-class HomePVCRecommend: UIViewController{
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}
-
-class HomePVCFind: UIViewController{
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}*/
-
-
 // 歌單，包括自行設定的歌單、主題歌單（如：運動、讀書、天氣等）
 class ListPVC: UIPageViewController{
     
@@ -240,20 +217,4 @@ extension ListPVC: UIPageViewControllerDelegate, UIPageViewControllerDataSource{
     }
 }
 
-/*class ListPVCPersonal: UIViewController{
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-    
-    
-    
-}
-
-class ListPVCTheme: UIViewController{
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-}*/
 

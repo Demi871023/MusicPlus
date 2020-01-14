@@ -12,6 +12,7 @@ import AVFoundation
 
 class RootViewController: UIViewController,FetchSelectRow{
     func fetchInt(rowNumber: Int) {
+        // 檢查此 page 是否已被載入過
         if isViewLoaded
         {
             print("Load!")
@@ -28,26 +29,7 @@ class RootViewController: UIViewController,FetchSelectRow{
         DispatchQueue.main.async(){
             self.NowPlayingView.isHidden = true
         }
-        print("===")
-        print(rowNumber)
-        
-        
-        print(SongSearchArray[rowNumber].SongName)
-        print(SongSearchArray[rowNumber].Singer)
-        //let cover = SongSearchArray[rowNumber].Cover.path
-        //let songname = SongSearchArray[rowNumber].SongName
-        //let singer = SongSearchArray[rowNumber].Singer
-        
-        //CoverImage.image = UIImage(contentsOfFile: SongSearchArray[selectSongNumber].Cover.path)
-        
-        
         NowPlayingSongNameText.text = SongSearchArray[rowNumber].SongName
-        //SingerText.text = SongSearchArray[rowNumber].Singer
-        
-        
-        /*CoverImage.image = UIImage(contentsOfFile: SongSearchArray[rowNumber].Cover.path)
-         SongNameText.text = SongSearchArray[rowNumber].SongName
-         SingerText.text = SongSearchArray[rowNumber].Singer*/
     }
     
     
@@ -55,23 +37,16 @@ class RootViewController: UIViewController,FetchSelectRow{
     var SearchRecordFilePath = String()
     
     @IBOutlet weak var NowPlayingView: UIView!
-    
     @IBOutlet weak var NowPlayingCoverImage: UIView!
-    
     @IBOutlet weak var NowPlayingSongNameText: UILabel!
-    
     @IBAction func LogoutButtonHandler(_ sender: Any) {
         DispatchQueue.main.async(){
             self.performSegue(withIdentifier: "LogoutSegue", sender: self)
         }
     }
     
-    //let SearchRecordFile:String = "SearchRecord.txt"
-    
     let fileManger = FileManager.default
     let UserSearchRecordFile = NSHomeDirectory() + "/Documents/SearchRecord.txt"
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,14 +56,11 @@ class RootViewController: UIViewController,FetchSelectRow{
         DispatchQueue.main.async(){
             self.NowPlayingView.isHidden = true
         }
-        let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        print(mainPath)
-        SearchRecordFilePath = mainPath + "/SearchRecord.txt"
-        //print(<#T##items: Any...##Any#>)
-        let SearchRecordFileIsExit = FileManager.default.fileExists(atPath: SearchRecordFilePath)
         
-        print(SearchRecordFileIsExit)
-        //let path = try FileManager.default.url(for: .documentDirectory, in:.userDomainMask, appropriateFor: nil, create: true)
+        // 在一登入的時候就創建、檢查該手機的個人搜尋紀錄檔案
+        let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        SearchRecordFilePath = mainPath + "/SearchRecord.txt"
+        let SearchRecordFileIsExit = FileManager.default.fileExists(atPath: SearchRecordFilePath)
         
         if SearchRecordFileIsExit == false
         {
@@ -105,25 +77,7 @@ class RootViewController: UIViewController,FetchSelectRow{
         {
             print("File is exist")
         }
-        
-        
-        /*var SearchRecordFileURL = URL(fileURLWithPath: UserSearchRecordFile)
-        
-        do{
-            var noBackUp = URLResourceValues()
-            noBackUp.isExcludedFromBackup = true
-            try SearchRecordFileURL.setResourceValues(noBackUp)
-        }
-        catch
-        {
-            print("noBackUp setting fail")
-        }*/
-        
-        // Do any additional setup after loading the view.
     }
-    
-    
-    
     
     // PageViewController
     var CenterPVC:CenterPageViewController!

@@ -24,6 +24,7 @@ var SongElapsedMinute = 0
 var SongElapsedSecond = 0
 var LoopControl:Bool = false
 
+// 現在播放歌曲頁面
 class FifthPageViewController: UIViewController, FetchSelectRow{
     
     var timer: Timer?
@@ -152,9 +153,6 @@ class FifthPageViewController: UIViewController, FetchSelectRow{
         super.viewDidLoad()
    
         self.navigationController?.isNavigationBarHidden = true
-        //let image = UIImage()
-        //self.navigationController?.navigationBar.setBackgroundImage(image, for: .default)
-        //self.navigationController?.navigationBar.isTranslucent = true
 
         SongRemainMinute = SongRemain / 60
         SongRemainSecond = SongRemain - (SongRemainMinute * 60)

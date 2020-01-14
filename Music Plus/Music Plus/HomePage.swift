@@ -10,13 +10,10 @@ import Foundation
 import UIKit
 import Charts
 
-//var jsonSongFindObjectArray = [SongFindWithKey]()
-
-//var SongFindWithKey = [SONG_FIND_WITH_KEY]()
-
 var RecommendListLoad: Bool = false
 var FindKey:String = ""
 
+// HomePage 旗下子頁面跳轉使用
 class HomePage: UIViewController{
     @IBOutlet weak var RankButton: UIButton!
     @IBOutlet weak var RecommendButton: UIButton!
@@ -26,11 +23,7 @@ class HomePage: UIViewController{
         super.viewDidLoad()
         RankButton.setTitleColor(UIColor.orange, for: .normal)
         RankButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
-        
-        //GetSongName()
-        // Do any additional setup after loading the view.
     }
-    
     
     var CenterPVC:HomePVC!
     
@@ -44,6 +37,7 @@ class HomePage: UIViewController{
             }
         }
     }
+    
     @IBAction func HomePageFirst(_ sender: Any) {
         CenterPVC.setViewControllerFromIndex(index: 0)
         RankButton.setTitleColor(UIColor.orange, for: .normal)
@@ -55,7 +49,6 @@ class HomePage: UIViewController{
     }
     
     @IBAction func HomePageSecond(_ sender: Any) {
-        
         CenterPVC.setViewControllerFromIndex(index: 1)
         RankButton.setTitleColor(UIColor.white, for: .normal)
         RankButton.titleLabel?.font = UIFont.systemFont(ofSize: 25)
@@ -63,9 +56,7 @@ class HomePage: UIViewController{
         RecommendButton.titleLabel?.font = UIFont.systemFont(ofSize: 35)
         FindButton.setTitleColor(UIColor.white, for: .normal)
         FindButton.titleLabel?.font = UIFont.systemFont(ofSize: 25)
-        
     }
-    
     
     @IBAction func HomePageThird(_ sender: Any) {
         CenterPVC.setViewControllerFromIndex(index: 2)
@@ -78,14 +69,15 @@ class HomePage: UIViewController{
     }
 }
 
+// 排行榜
 class HomePVCRank: UIViewController{
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
 }
 
+// 個人推薦
 class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     @IBOutlet weak var LoadingActivityIndicator: UIActivityIndicatorView!
@@ -97,9 +89,9 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
     var jsonObjectRecommendArray = [SongInfo]()
     var MySongRecommendArray = [SONG]()
     
+    // 在開啟頁面時，傳送登入時取得的 UserId 給後端來取得個人推薦的 20 首 SongId
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         LoadingActivityIndicator.startAnimating()
         SongRecommendTitleLabel.text = UserNickName
@@ -164,6 +156,7 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
     }
     
+    // 取得的SongId存成陣列後在傳給後端，取得這些歌曲的資訊並設置完成
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if(RecommendListLoad == false)
@@ -217,7 +210,6 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
                                 
                                 print(self.MySongRecommendArray[index].SongName)
                                 print(self.MySongRecommendArray[index].Id)
-                                //downloadSongCover(url: jsonObjectArray[index].song_photo, singer: jsonObjectArray[index].song_artist, album: jsonObjectArray[index].song_album)
                             }
                             print(self.MySongRecommendArray.count)
                         }
@@ -335,9 +327,6 @@ class HomePVCRecommend: UIViewController, UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
-    
-    
-    
 }
 
 var jsonSongFindObjectArray = [SongFindWithKey]()
@@ -372,7 +361,6 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         FindKeyLabel.text = KeyStringTmp
         DispatchQueue.main.async {
             self.AddSuccessNotificationLabel.isHidden = true
-            // UIView usage
         }
     }
     
@@ -431,7 +419,6 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         do{
             let fileUpdater = try FileHandle(forUpdating: fileURL)
             // 移至檔案最後加入新的搜尋關鍵字
-            //fileUpdater.seek(toFileOffset: 3)
             fileUpdater.seekToEndOfFile()
             fileUpdater.write(record.data(using: .utf8)!)
             fileUpdater.closeFile()
@@ -444,6 +431,7 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         }
     }
     
+    // 暫停使用，此功能移植到 HomePVCRecord
     func SetUpSongFindWithKey()
     {
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -451,12 +439,7 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         {
             let singer = jsonSongFindObjectArray[index].song_artist
             let album = jsonSongFindObjectArray[index].song_album
-            //let album = "句號"
             let coverPath = documentDirectory.appendingPathComponent(singer + "/" + album + "/cover.jpg")
-            /*if jsonSongFindObjectArray[index].song_lyrics is NSNull
-            {
-                print("沒有歌詞")
-            }*/
             
             if jsonSongFindObjectArray[index].song_lyrics == nil
             {
@@ -476,7 +459,6 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     func downloadSongCover(url: URL, singer:String, album:String){
         let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        //print(mainPath)
         let singerPath = mainPath + "/" + singer
         
         let TestCoverPath = mainPath + "/" + singer + "/" + album + "/cover.jpg"
@@ -485,7 +467,6 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         
         if CoverIsExit == false
         {
-            //var directoryforsinger:ObjCBool = true
             let singerIsExit = FileManager.default.fileExists(atPath: singerPath)
             
             if singerIsExit == false
@@ -539,6 +520,7 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
         
     }
     
+    // 點擊愛心的觸發事件
     @objc func connected(sender: UIButton)
     {
         var isExistInMyList:Bool = false
@@ -564,7 +546,6 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
             
             DispatchQueue.main.async {
                 self.AddSuccessNotificationLabel.isHidden = false
-                // UIView usage
             }
             
             let parameters:[String:Any] = ["UserId": UserId, "SongId": SongFindShowArray[ClickButtonRow].Id] as! [String:Any]
@@ -629,30 +610,11 @@ class HomePVCFind: UIViewController, UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
-    
-    /*func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return RecordStringArray.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = SongFindRecordTableView.dequeueReusableCell(withIdentifier: "cell", for:indexPath as IndexPath) as! SongFindRecordCell
-        
-        cell.RecordStringCell.text = RecordStringArray[indexPath.row]
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
-    }*/
-    
 }
 
-var RecordStringArray:Array<String> = Array()
 
+// 搜尋紀錄字串所存陣列
+var RecordStringArray:Array<String> = Array()
 
 // 搜尋紀錄頁面
 class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSource
@@ -682,7 +644,6 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
             
         }
         catch{
-            // do something with Error
             print("Read error")
         }
         
@@ -838,10 +799,9 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         {
             print("Write Error")
         }
-        
     }
     
-    
+    // 設置利用搜尋的 Key 所得到的所有歌曲資訊
     func SetUpSongFindWithKey()
     {
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -891,7 +851,6 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func downloadSongCover(url: URL, singer:String, album:String){
         let mainPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        //print(mainPath)
         let singerPath = mainPath + "/" + singer
         
         let TestCoverPath = mainPath + "/" + singer + "/" + album + "/cover.jpg"
@@ -900,7 +859,6 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
         if CoverIsExit == false
         {
-            //var directoryforsinger:ObjCBool = true
             let singerIsExit = FileManager.default.fileExists(atPath: singerPath)
             
             if singerIsExit == false
@@ -950,41 +908,24 @@ class HomePVCRecord: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
             }.resume()
         }
-        
-        
     }
-    
-    
-    /*func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        <#code#>
-    }*/
-    
-    
 }
 
 class SONGFIND {
     let Id: Int
     let Cover: URL
-    //let Album: String
     let Lyric: String
     let SongName: String
     let Singer: String
     let Album: String
-    //let Category: SongType
-    //var SongPath: URL
-    //var SongLength: Double
     
     init(Id: Int, Cover: URL, Lyric: String, SongName: String, Singer: String, Album: String)
     {
         self.Id = Id
         self.Cover = Cover
         self.Lyric = Lyric
-        //self.Album = Album
         self.SongName = SongName
         self.Singer = Singer
         self.Album = Album
-        //self.Category = Category
-        //self.SongPath = SongPath
-        //self.SongLength = SongLength
     }
 }

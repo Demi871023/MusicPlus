@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 
+// 用於 Parse 註冊完成後回傳回來的 Token
 struct RegisterToken: Decodable{
     let Check: String
 }
 
+// 註冊頁面
 class RegisterViewController:UIViewController{
     
     var token = String("")
@@ -59,7 +61,6 @@ class RegisterViewController:UIViewController{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         SetUpErrorTextAndImage()
     }
     
@@ -132,19 +133,13 @@ class RegisterViewController:UIViewController{
                             DispatchQueue.main.async(){
                                 self.performSegue(withIdentifier: "RegisterYesSegue", sender: self)
                             }
-                            /*self.performSegue(withIdentifier: "LoginSegue", sender: self)*/
-                            
                             print("correct")
                         }
                         else if self.token == "No"
                         {
-                            /*let alert = UIAlertController(title: "Oops", message: "Your account or password is wrong", preferredStyle: UIAlertController.Style.alert)
-                             alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
-                             self.present(alert, animated: true, completion: nil)*/
                             DispatchQueue.main.async {
                                 self.ErrorImage.isHidden = false
                                 self.ErrorText.isHidden = false
-                                // UIView usage
                             }
                             print("wrong")
                         }
@@ -153,7 +148,7 @@ class RegisterViewController:UIViewController{
                         print(error)
                     }
                 }
-                }.resume()
+            }.resume()
         }
         else
         {
@@ -183,8 +178,6 @@ class RegisterViewController:UIViewController{
                 AgreeErrorImage.isHidden = false
             }
         }
-        
-        
     }
 }
 
